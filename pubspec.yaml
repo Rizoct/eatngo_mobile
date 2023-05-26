@@ -41,6 +41,7 @@ dependencies:
   google_maps_flutter: ^2.2.6
   maps_toolkit: ^2.0.1
   url_launcher: ^6.1.11
+  grouped_list: ^5.1.2
 
 dev_dependencies:
   flutter_test:

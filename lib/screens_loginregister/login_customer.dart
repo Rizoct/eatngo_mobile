@@ -29,15 +29,15 @@ class _LoginCustomerPageState extends State<LoginCustomerPage> {
         child: Stack(
           children: [
             Container(
-              height: MediaQuery.of(context).size.height / 2,
+              height: MediaQuery.of(context).size.height / 1.2,
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  begin: Alignment.topRight,
-                  end: Alignment.bottomLeft,
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
                   colors: [
-                    Colors.blue,
                     Colors.indigo,
+                    Colors.grey[50]!,
                   ],
                 ),
               ),

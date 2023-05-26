@@ -110,23 +110,20 @@ class OrderButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-      child: SizedBox(
-        width: double.infinity,
-        height: 50,
-        child: ElevatedButton(
-            onPressed: onPressed,
-            style: ButtonStyle(
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                        side: BorderSide(color: Colors.black)))),
-            child: Text(
-              ButtonText,
-              style: TextStyle(fontSize: 19),
-            )),
-      ),
+    return SizedBox(
+      width: double.infinity,
+      height: 50,
+      child: ElevatedButton(
+          onPressed: onPressed,
+          style: ButtonStyle(
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                      side: BorderSide(color: Colors.black)))),
+          child: Text(
+            ButtonText,
+            style: TextStyle(fontSize: 19),
+          )),
     );
   }
 }

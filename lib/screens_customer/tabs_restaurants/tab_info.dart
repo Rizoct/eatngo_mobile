@@ -19,7 +19,7 @@ class _InfoTabState extends State<InfoTab> {
         bottomNavigationBar: BottomAppBar(
             color: Colors.grey[50],
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: OrderButton(
                 ButtonText: 'Order',
                 onPressed: () {
@@ -27,7 +27,7 @@ class _InfoTabState extends State<InfoTab> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => OrderMainScreen(),
+                      builder: (context) => OrderMainPage(),
                     ),
                   );
                 },

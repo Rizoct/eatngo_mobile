@@ -77,7 +77,6 @@ class _MainMenuCustomerState extends State<MainMenuCustomer> {
             label: "Search Something Here",
             labelStyle: TextStyle(fontSize: 17),
             onChanged: (value) {
-              print("value on Change");
               setState(() {
                 searchText = value;
               });
@@ -98,6 +97,9 @@ class _MainMenuCustomerState extends State<MainMenuCustomer> {
                 ),
                 items: imageSliders,
               ),
+            ),
+            Divider(
+              height: 5,
             ),
             SizedBox(
               width: MediaQuery.of(context).size.width,
