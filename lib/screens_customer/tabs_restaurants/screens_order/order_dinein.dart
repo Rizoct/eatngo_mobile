@@ -1,3 +1,4 @@
+import 'package:eatngo_thesis/components/buttons.dart';
 import 'package:eatngo_thesis/components/cards.dart';
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
@@ -21,12 +22,33 @@ class OrderDineInPage extends StatefulWidget {
 }
 
 class _OrderDineInPageState extends State<OrderDineInPage> {
+  bool isOrder = false;
+  void initState() {
+    super.initState();
+
+    isOrder = false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Grouped List View Example'),
       ),
+      bottomNavigationBar: isOrder
+          ? BottomAppBar(
+              color: Colors.grey[50],
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: OrderButton(
+                  ButtonText: 'Order',
+                  onPressed: () {
+                    print('pressed');
+                  },
+                ),
+              ))
+          : null,
       body: GroupedListView<dynamic, String>(
         elements: _elements,
         groupBy: (element) => element['group'],
@@ -49,11 +71,15 @@ class _OrderDineInPageState extends State<OrderDineInPage> {
               margin:
                   const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
               child: MenuCardwithAdd(
-                menuName: element['name'],
-                menuDesc: 'Tes Desc',
-                imgStr: '',
-                menuPrice: 10000,
-              ));
+                  menuName: element['name'],
+                  menuDesc: 'Tes Desc',
+                  imgStr: '',
+                  menuPrice: 10000,
+                  onPressed: () {
+                    setState(() {
+                      isOrder = true;
+                    });
+                  }));
         },
       ),
     );

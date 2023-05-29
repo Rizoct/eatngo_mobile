@@ -23,7 +23,7 @@ class _LoginMainPageState extends State<LoginMainPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       bottomNavigationBar: BottomAppBar(
-        color: Colors.grey[50]!,
+        color: Colors.transparent,
         elevation: 0,
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Padding(
@@ -51,6 +51,14 @@ class _LoginMainPageState extends State<LoginMainPage> {
       ),
       body: Stack(
         children: [
+          /*
+          Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage('assets/images/bg-alt.jpg'),
+                      fit: BoxFit.fill))),*/
           Container(
             height: 400,
             width: double.infinity,

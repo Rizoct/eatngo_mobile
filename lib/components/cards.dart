@@ -89,6 +89,7 @@ class MenuCard extends StatelessWidget {
   final String menuName;
   final String menuDesc;
   final int menuPrice;
+
   const MenuCard({
     super.key,
     required this.imgStr,
@@ -144,12 +145,14 @@ class MenuCardwithAdd extends StatelessWidget {
   final String menuName;
   final String menuDesc;
   final int menuPrice;
+  final VoidCallback onPressed;
   const MenuCardwithAdd({
     super.key,
     required this.imgStr,
     required this.menuName,
     required this.menuDesc,
     required this.menuPrice,
+    required this.onPressed,
   });
 
   @override
@@ -162,32 +165,39 @@ class MenuCardwithAdd extends StatelessWidget {
             border: Border.all(color: Colors.grey, width: 0.5)),
         width: double.infinity,
         height: 120,
-        child: Row(children: [
-          Container(
-            decoration: BoxDecoration(
-                color: Colors.green, borderRadius: BorderRadius.circular(10.0)),
-            width: 120,
-            height: MediaQuery.of(context).size.height,
+        child:
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Row(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.circular(10.0)),
+                width: 120,
+                height: MediaQuery.of(context).size.height,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ContentSubtitle(
+                      title: menuName,
+                    ),
+                    ContentSubtitle(title: menuDesc),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    ContentSubtitle(
+                      title: 'Rp. $menuPrice',
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ContentSubtitle(
-                  title: '$menuName',
-                ),
-                ContentSubtitle(title: menuDesc),
-                SizedBox(
-                  width: 10,
-                ),
-                ContentSubtitle(
-                  title: 'Rp. $menuPrice',
-                ),
-              ],
-            ),
-          ),
+          IconButton(onPressed: onPressed, icon: Icon(Icons.add))
         ]),
       ),
     );

@@ -42,6 +42,9 @@ dependencies:
   maps_toolkit: ^2.0.1
   url_launcher: ^6.1.11
   grouped_list: ^5.1.2
+  fluttertoast: ^8.0.9
+  http: ^0.13.4
+  flutter_cart: ^0.0.8
 
 dev_dependencies:
   flutter_test:
@@ -72,6 +75,8 @@ flutter:
   assets:
     - assets/images/logo.png
     - assets/images/logo-no-background.png
+    - assets/images/bg-main.jpg
+    - assets/images/bg-alt.jpg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 
