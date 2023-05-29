@@ -44,7 +44,6 @@ dependencies:
   grouped_list: ^5.1.2
   fluttertoast: ^8.0.9
   http: ^0.13.4
-  flutter_cart: ^0.0.8
 
 dev_dependencies:
   flutter_test:
