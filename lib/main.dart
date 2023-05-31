@@ -15,7 +15,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         primarySwatch: Colors.indigo,
-        primaryColorLight: Colors.indigoAccent,
         fontFamily: 'SFPro',
       ),
       home: MainMenuCustomer(),

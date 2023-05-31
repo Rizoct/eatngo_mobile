@@ -1,9 +1,11 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, use_build_context_synchronously
 
 import 'package:eatngo_thesis/components/buttons.dart';
 import 'package:eatngo_thesis/components/texts.dart';
 import 'package:eatngo_thesis/screens_customer/tabs_restaurants/screens_order/order_dinein.dart';
 import 'package:flutter/material.dart';
+import 'package:eatngo_thesis/functions/locationChecker.dart';
+import 'package:geolocator/geolocator.dart';
 
 class OrderMainPage extends StatefulWidget {
   const OrderMainPage({super.key});
@@ -13,11 +15,71 @@ class OrderMainPage extends StatefulWidget {
 }
 
 class _OrderMainPageState extends State<OrderMainPage> {
+  Position? position;
+  void _getCurrentLocation() async {
+    Position position = await _determinePosition();
+    setState(() {
+      position = position;
+    });
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Your Position'),
+            content: SelectableText(position.toString()),
+          );
+        });
+  }
+
+  Future<Position> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale
+        // returned true. According to Android guidelines
+        // your App should show an explanatory UI now.
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+    return await Geolocator.getCurrentPosition();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('<nama resto>'),
+        actions: [
+          IconButton(
+              onPressed: () async {
+                _getCurrentLocation();
+              },
+              icon: Icon(Icons.location_on))
+        ],
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(

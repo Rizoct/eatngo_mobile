@@ -44,6 +44,8 @@ dependencies:
   grouped_list: ^5.1.2
   fluttertoast: ^8.0.9
   http: ^0.13.4
+  geolocator: ^9.0.2
+  money_formatter: ^0.0.4
 
 dev_dependencies:
   flutter_test:

@@ -2,7 +2,9 @@
 
 import 'package:eatngo_thesis/components/cards.dart';
 import 'package:eatngo_thesis/components/texts.dart';
+import 'package:eatngo_thesis/drawers/maindrawer.dart';
 import 'package:eatngo_thesis/screens_customer/restaurantview_customer.dart';
+import 'package:eatngo_thesis/screens_customer/tabs_restaurants/screens_order/screens_checkout/checkout_orderstatus.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:eatngo_thesis/dummy_data/static_data.dart';
@@ -83,7 +85,7 @@ class _MainMenuCustomerState extends State<MainMenuCustomer> {
             },
           ),
         ),
-        drawer: Drawer(),
+        drawer: MainDrawer(),
         body: ListView(
           children: [
             Padding(
@@ -136,3 +138,18 @@ class _MainMenuCustomerState extends State<MainMenuCustomer> {
         ));
   }
 }
+
+/*
+ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => OrderStatusPage(
+                            isFromOrder: false,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Text('My Order')),
+                    */

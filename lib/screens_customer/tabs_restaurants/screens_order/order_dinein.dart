@@ -1,75 +1,9 @@
 import 'package:eatngo_thesis/components/buttons.dart';
 import 'package:eatngo_thesis/components/cards.dart';
 import 'package:eatngo_thesis/components/texts.dart';
+import 'package:eatngo_thesis/screens_customer/tabs_restaurants/screens_order/screens_checkout/checkout_dinein.dart';
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
-
-List _elements = [
-  {
-    'name': 'Tempe',
-    'group': 'Makanan',
-    'desc': 'Bukan Tahu',
-    'orderQuantity': 0,
-    'price': 2000,
-    'isZero': true,
-  },
-  {
-    'name': 'Tahu',
-    'group': 'Makanan',
-    'desc': 'Bukan Tahu',
-    'orderQuantity': 0,
-    'price': 2000,
-    'isZero': true,
-  },
-  {
-    'name': 'Es Teh',
-    'group': 'Minuman',
-    'desc': 'Bukan Tahu',
-    'orderQuantity': 0,
-    'price': 2000,
-    'isZero': true,
-  },
-  {
-    'name': 'Es Jeruk',
-    'group': 'Minuman',
-    'desc': 'Bukan Tahu',
-    'orderQuantity': 0,
-    'price': 2000,
-    'isZero': true,
-  },
-  {
-    'name': 'Ayam',
-    'group': 'Makanan',
-    'desc': 'Bukan Tahu',
-    'orderQuantity': 0,
-    'price': 2000,
-    'isZero': true,
-  },
-  {
-    'name': 'Soda Gembira',
-    'group': 'Minuman',
-    'desc': 'Bukan Tahu',
-    'orderQuantity': 0,
-    'price': 2000,
-    'isZero': true,
-  },
-  {
-    'name': 'French Fries',
-    'group': 'Snack',
-    'desc': 'Bukan Tahu',
-    'orderQuantity': 0,
-    'price': 2000,
-    'isZero': true,
-  },
-  {
-    'name': 'Hotdog',
-    'group': 'Snack',
-    'desc': 'Bukan Tahu',
-    'orderQuantity': 0,
-    'price': 2000,
-    'isZero': true,
-  },
-];
 
 class OrderDineInPage extends StatefulWidget {
   const OrderDineInPage({super.key});
@@ -79,11 +13,78 @@ class OrderDineInPage extends StatefulWidget {
 }
 
 class _OrderDineInPageState extends State<OrderDineInPage> {
+  final List _elements = [
+    {
+      'name': 'Tempe',
+      'group': 'Makanan',
+      'desc': 'Bukan Tahu',
+      'orderQuantity': 0,
+      'price': 2000,
+      'isZero': true,
+    },
+    {
+      'name': 'Tahu',
+      'group': 'Makanan',
+      'desc': 'Bukan Tahu',
+      'orderQuantity': 0,
+      'price': 2000,
+      'isZero': true,
+    },
+    {
+      'name': 'Es Teh',
+      'group': 'Minuman',
+      'desc': 'Bukan Tahu',
+      'orderQuantity': 0,
+      'price': 2000,
+      'isZero': true,
+    },
+    {
+      'name': 'Es Jeruk',
+      'group': 'Minuman',
+      'desc': 'Bukan Tahu',
+      'orderQuantity': 0,
+      'price': 2000,
+      'isZero': true,
+    },
+    {
+      'name': 'Ayam',
+      'group': 'Makanan',
+      'desc': 'Bukan Tahu',
+      'orderQuantity': 0,
+      'price': 2000,
+      'isZero': true,
+    },
+    {
+      'name': 'Soda Gembira',
+      'group': 'Minuman',
+      'desc': 'Bukan Tahu',
+      'orderQuantity': 0,
+      'price': 2000,
+      'isZero': true,
+    },
+    {
+      'name': 'French Fries',
+      'group': 'Snack',
+      'desc': 'Bukan Tahu',
+      'orderQuantity': 0,
+      'price': 2000,
+      'isZero': true,
+    },
+    {
+      'name': 'Hotdog',
+      'group': 'Snack',
+      'desc': 'Bukan Tahu',
+      'orderQuantity': 0,
+      'price': 2000,
+      'isZero': true,
+    },
+  ];
+
+  List orderList = [];
   bool isOrder = false;
-  int a = 0;
+  int counter = 0;
   void initState() {
     super.initState();
-
     isOrder = false;
   }
 
@@ -93,7 +94,7 @@ class _OrderDineInPageState extends State<OrderDineInPage> {
       appBar: AppBar(
         title: const Text('Pilih Menu'),
       ),
-      bottomNavigationBar: isOrder
+      bottomNavigationBar: (counter > 0)
           ? BottomAppBar(
               color: Colors.grey[50],
               child: Padding(
@@ -102,7 +103,22 @@ class _OrderDineInPageState extends State<OrderDineInPage> {
                 child: OrderButton(
                   ButtonText: 'Order',
                   onPressed: () {
-                    print('pressed');
+                    if (orderList.isNotEmpty) {
+                      orderList.clear();
+                    }
+                    for (int a = 0; a < _elements.length; a++) {
+                      if (_elements[a]['orderQuantity'] != 0) {
+                        orderList.add(_elements[a]);
+                      }
+                    }
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CheckOutDineInPage(
+                          checkOutData: orderList,
+                        ),
+                      ),
+                    );
                   },
                 ),
               ))
@@ -133,12 +149,12 @@ class _OrderDineInPageState extends State<OrderDineInPage> {
                   menuDesc: element['desc'],
                   imgStr: '',
                   menuPrice: element['price'],
-                  orderCount: element['orderQuantity'],
-                  isZero: element['isZero'],
+                  orderQuantity: element['orderQuantity'],
                   onPressedAdd: () {
                     setState(() {
                       isOrder = true;
                       element['orderQuantity']++;
+                      counter++;
                     });
                   },
                   onPressedReduce: () {
@@ -147,6 +163,7 @@ class _OrderDineInPageState extends State<OrderDineInPage> {
                         element['isZero'] = true;
                       } else {
                         element['orderQuantity']--;
+                        counter--;
                       }
                     });
                   }));
@@ -163,22 +180,21 @@ class MenuCardwithAdd extends StatelessWidget {
   final int menuPrice;
   final VoidCallback onPressedAdd;
   final VoidCallback onPressedReduce;
-  final int orderCount;
-  final bool isZero;
-  const MenuCardwithAdd(
-      {super.key,
-      required this.imgStr,
-      required this.menuName,
-      required this.menuDesc,
-      required this.menuPrice,
-      required this.onPressedAdd,
-      required this.onPressedReduce,
-      required this.orderCount,
-      required this.isZero});
+  final int orderQuantity;
+  const MenuCardwithAdd({
+    super.key,
+    required this.imgStr,
+    required this.menuName,
+    required this.menuDesc,
+    required this.menuPrice,
+    required this.onPressedAdd,
+    required this.onPressedReduce,
+    required this.orderQuantity,
+  });
 
   @override
   Widget build(BuildContext context) {
-    bool isZero = true;
+    int count = orderQuantity;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -221,9 +237,12 @@ class MenuCardwithAdd extends StatelessWidget {
           ),
           Row(
             children: [
-              IconButton(onPressed: onPressedReduce, icon: Icon(Icons.remove)),
+              (count != 0)
+                  ? IconButton(
+                      onPressed: onPressedReduce, icon: Icon(Icons.remove))
+                  : Container(),
               Text(
-                orderCount.toString(),
+                orderQuantity.toString(),
                 style: TextStyle(color: Colors.black, fontSize: 18),
               ),
               IconButton(onPressed: onPressedAdd, icon: Icon(Icons.add)),

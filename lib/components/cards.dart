@@ -140,6 +140,62 @@ class MenuCard extends StatelessWidget {
   }
 }
 
+class MenuCardCheckout extends StatelessWidget {
+  final String imgStr;
+  final String menuName;
+  final String menuDesc;
+  final int menuPrice;
+
+  const MenuCardCheckout({
+    super.key,
+    required this.imgStr,
+    required this.menuName,
+    required this.menuDesc,
+    required this.menuPrice,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.0),
+            border: Border.all(color: Colors.grey, width: 0.5)),
+        width: double.infinity,
+        height: 120,
+        child: Row(children: [
+          Container(
+            decoration: BoxDecoration(
+                color: Colors.green, borderRadius: BorderRadius.circular(10.0)),
+            width: 120,
+            height: MediaQuery.of(context).size.height,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ContentSubtitle(
+                  title: '$menuName',
+                ),
+                ContentSubtitle(title: menuDesc),
+                SizedBox(
+                  width: 10,
+                ),
+                ContentSubtitle(
+                  title: 'Rp. $menuPrice',
+                ),
+              ],
+            ),
+          )
+        ]),
+      ),
+    );
+  }
+}
+
 class ProfileCard extends StatelessWidget {
   const ProfileCard({super.key});
 
