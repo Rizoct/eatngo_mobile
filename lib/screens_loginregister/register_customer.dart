@@ -1,87 +1,157 @@
-import 'package:flutter/material.dart';
+// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
-class RegisterCustomerPage extends StatefulWidget {
-  const RegisterCustomerPage({super.key});
+import 'package:eatngo_thesis/components/texts.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
+
+class RegisterCustomerpage extends StatefulWidget {
+  const RegisterCustomerpage({super.key});
 
   @override
-  _RegisterCustomerPageState createState() => _RegisterCustomerPageState();
+  State<RegisterCustomerpage> createState() => _RegisterCustomerpageState();
 }
 
-class _RegisterCustomerPageState extends State<RegisterCustomerPage> {
-  final _formKey = GlobalKey<FormState>();
-  String? _email;
-  String? _password;
-  String? _confirmPassword;
-
+class _RegisterCustomerpageState extends State<RegisterCustomerpage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Register as Customer'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'Email'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  _email = value;
-                },
-              ),
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'Password'),
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a password';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  _password = value;
-                },
-              ),
-              TextFormField(
-                decoration:
-                    const InputDecoration(labelText: 'Confirm Password'),
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please confirm your password';
-                  }
-                  if (value != _password) {
-                    return 'Passwords do not match';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  _confirmPassword = value;
-                },
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
+      appBar: AppBar(title: Text('Register as Customer')),
+      resizeToAvoidBottomInset: false,
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.transparent,
+        elevation: 0,
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: SizedBox(
+                width: double.infinity,
+                height: 50,
                 child: ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      _formKey.currentState!.save();
-                      // Send registration data to server or database
-                    }
-                  },
-                  child: const Text('Register'),
+                  style: ButtonStyle(
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18.0),
+                  ))),
+                  onPressed: () {},
+                  child: Text(
+                    'Register',
+                    style: TextStyle(fontSize: 18),
+                  ),
                 ),
               ),
+            ),
+          ),
+          Padding(
+              padding: EdgeInsets.all(15.0),
+              child: RichText(
+                text: TextSpan(
+                  text: "Already have an Account?",
+                  style: TextStyle(fontSize: 18, color: Colors.black),
+                  children: <TextSpan>[
+                    TextSpan(
+                        style: TextStyle(color: Colors.indigo),
+                        text: ' Click Here!',
+                        recognizer: TapGestureRecognizer()..onTap = () {}),
+                  ],
+                ),
+              )),
+        ]),
+      ),
+      body: Stack(
+        children: [
+          Container(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(),
+          ),
+          ListView(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                    color: Colors.indigo.shade700,
+                    borderRadius:
+                        BorderRadius.vertical(bottom: Radius.circular(20))),
+                child: Column(children: [
+                  SizedBox(
+                    height: 20,
+                  ),
+                  textFieldInput('Name'),
+                  textFieldInput('Phone Number'),
+                  textFieldInput('Email'),
+                  textFieldInput('Location'),
+                  Divider(
+                    height: 20,
+                    color: Colors.white,
+                  ),
+                  textFieldPassword('Password'),
+                  textFieldPassword('Re-enter Password'),
+                  SizedBox(
+                    height: 20,
+                  ),
+                ]),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              SizedBox(height: 30),
             ],
           ),
+        ],
+      ),
+    );
+  }
+
+  Padding textFieldInput(String hint) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Material(
+        elevation: 10.0,
+        shadowColor: Colors.black,
+        child: TextFormField(
+          //controller: emailController,
+          onChanged: (value) {
+            setState(() {
+              //emailLogin = value;
+            });
+          },
+          autofocus: false,
+          decoration: InputDecoration(
+              hintText: hint,
+              fillColor: Colors.white,
+              filled: true,
+              contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+              enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  borderSide: BorderSide(color: Colors.white, width: 3.0))),
+        ),
+      ),
+    );
+  }
+
+  Padding textFieldPassword(String hint) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Material(
+        elevation: 10.0,
+        shadowColor: Colors.black,
+        child: TextFormField(
+          //controller: passController,
+          onChanged: (value) {
+            setState(() {
+              //password = value;
+            });
+          },
+          obscureText: true,
+          autofocus: false,
+          decoration: InputDecoration(
+              hintText: hint,
+              fillColor: Colors.white,
+              filled: true,
+              contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+              enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  borderSide: BorderSide(color: Colors.white, width: 3.0))),
         ),
       ),
     );

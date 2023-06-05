@@ -33,7 +33,8 @@ class RestaurantMainCard extends StatelessWidget {
           child: Row(children: [
             Container(
               decoration: BoxDecoration(
-                  color: Colors.green,
+                  image: DecorationImage(
+                      image: NetworkImage(imgStr), fit: BoxFit.fill),
                   borderRadius: BorderRadius.circular(10.0)),
               width: 120,
               height: MediaQuery.of(context).size.height,
@@ -44,10 +45,13 @@ class RestaurantMainCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ContentSubtitle(
+                  ContentTitle(
                     title: restaurantName,
                   ),
-                  ContentSubtitle(title: restaurantAddress),
+                  Flexible(
+                      child: SizedBox(
+                          width: 200,
+                          child: ContentSubtitle(title: restaurantAddress))),
                   Row(
                     children: [
                       RatingBar.builder(
@@ -111,7 +115,9 @@ class MenuCard extends StatelessWidget {
         child: Row(children: [
           Container(
             decoration: BoxDecoration(
-                color: Colors.green, borderRadius: BorderRadius.circular(10.0)),
+                borderRadius: BorderRadius.circular(10.0),
+                image: DecorationImage(
+                    image: NetworkImage(imgStr), fit: BoxFit.fill)),
             width: 120,
             height: MediaQuery.of(context).size.height,
           ),

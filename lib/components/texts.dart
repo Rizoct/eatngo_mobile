@@ -26,7 +26,7 @@ class ContentTitle extends StatelessWidget {
       title,
       style: TextStyle(
         color: Colors.black,
-        fontSize: 20,
+        fontSize: 14,
         fontWeight: FontWeight.bold,
       ),
     );
@@ -43,8 +43,29 @@ class ContentSubtitle extends StatelessWidget {
       title,
       style: TextStyle(
         color: Colors.black,
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
+        fontSize: 14,
+      ),
+    );
+  }
+}
+
+class RichTextBoldTail extends StatelessWidget {
+  final String nonBold;
+  final String bold;
+  const RichTextBoldTail(
+      {super.key, required this.nonBold, required this.bold});
+
+  @override
+  Widget build(BuildContext context) {
+    return RichText(
+      text: TextSpan(
+        text: nonBold,
+        style: TextStyle(color: Colors.black, fontSize: 16),
+        children: <TextSpan>[
+          TextSpan(
+              text: bold,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+        ],
       ),
     );
   }

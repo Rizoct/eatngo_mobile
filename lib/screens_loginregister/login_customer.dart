@@ -298,7 +298,14 @@ class _LoginCustomerPageState extends State<LoginCustomerPage> {
                                           toastLength: Toast.LENGTH_SHORT,
                                         );
                                       } else {
-                                        login();
+                                        //login();
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                MainMenuCustomer(),
+                                          ),
+                                        );
                                       }
                                     },
                                     child: Text(

@@ -6,7 +6,18 @@ import 'package:eatngo_thesis/screens_customer/tabs_restaurants/screens_order/or
 import 'package:flutter/material.dart';
 
 class InfoTab extends StatefulWidget {
-  const InfoTab({super.key});
+  final String imgStr;
+  final String restaurantName;
+  final String restaurantAddress;
+  final String restaurantDesc;
+  final double restaurantRating;
+  const InfoTab(
+      {super.key,
+      required this.imgStr,
+      required this.restaurantAddress,
+      required this.restaurantName,
+      required this.restaurantRating,
+      required this.restaurantDesc});
 
   @override
   State<InfoTab> createState() => _InfoTabState();
@@ -27,7 +38,9 @@ class _InfoTabState extends State<InfoTab> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => OrderMainPage(),
+                      builder: (context) => OrderMainPage(
+                        restoName: widget.restaurantName,
+                      ),
                     ),
                   );
                 },
@@ -41,20 +54,31 @@ class _InfoTabState extends State<InfoTab> {
                 width: double.infinity,
                 height: 200,
                 decoration: BoxDecoration(
-                    color: Colors.green,
+                    image: DecorationImage(
+                        image: NetworkImage(widget.imgStr), fit: BoxFit.fill),
                     borderRadius: BorderRadius.all(Radius.circular(5))),
               ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 5),
-              child: ContentTitle(title: '<nama resto>'),
+              child: ContentTitle(title: widget.restaurantName),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 5),
               child: SizedBox(
                 width: 150,
                 child: Text(
-                  "This text is very very very very very very very very very very very very very very very very very very very very very very very very very long",
+                  widget.restaurantDesc,
+                  style: TextStyle(height: 1.5),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 5),
+              child: SizedBox(
+                width: 150,
+                child: Text(
+                  widget.restaurantAddress,
                   style: TextStyle(height: 1.5),
                 ),
               ),

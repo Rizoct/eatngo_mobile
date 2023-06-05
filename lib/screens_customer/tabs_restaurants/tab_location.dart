@@ -17,7 +17,8 @@ List<LatLng> polygonPoints = [
 ];
 
 class LocationTab extends StatefulWidget {
-  const LocationTab({super.key});
+  final String restoName;
+  const LocationTab({super.key, required this.restoName});
 
   @override
   State<LocationTab> createState() => _LocationTabState();
@@ -48,7 +49,9 @@ class _LocationTabState extends State<LocationTab> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => MapLocationScreen(),
+                      builder: (context) => MapLocationScreen(
+                        restoName: widget.restoName,
+                      ),
                     ),
                   );
                 },

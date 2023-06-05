@@ -3,12 +3,14 @@
 import 'package:eatngo_thesis/components/buttons.dart';
 import 'package:eatngo_thesis/components/texts.dart';
 import 'package:eatngo_thesis/screens_customer/tabs_restaurants/screens_order/order_dinein.dart';
+import 'package:eatngo_thesis/screens_customer/tabs_restaurants/screens_order/order_takeaway.dart';
 import 'package:flutter/material.dart';
 import 'package:eatngo_thesis/functions/locationChecker.dart';
 import 'package:geolocator/geolocator.dart';
 
 class OrderMainPage extends StatefulWidget {
-  const OrderMainPage({super.key});
+  final String restoName;
+  const OrderMainPage({super.key, required this.restoName});
 
   @override
   State<OrderMainPage> createState() => _OrderMainPageState();
@@ -72,7 +74,7 @@ class _OrderMainPageState extends State<OrderMainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('<nama resto>'),
+        title: Text(widget.restoName),
         actions: [
           IconButton(
               onPressed: () async {
@@ -94,7 +96,7 @@ class _OrderMainPageState extends State<OrderMainPage> {
               children: [
                 Text(
                   'Table Reservation',
-                  style: TextStyle(fontSize: 20, color: Colors.black),
+                  style: TextStyle(fontSize: 14, color: Colors.black),
                 ),
                 SizedBox(
                   height: 5,
@@ -140,7 +142,10 @@ class _OrderMainPageState extends State<OrderMainPage> {
                     child: Ink(
                       height: 150,
                       width: double.infinity,
-                      decoration: BoxDecoration(color: Colors.green),
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image:
+                                  AssetImage('assets/images/btn-dine-in.jpg'))),
                     ),
                   ),
                 ),
@@ -155,11 +160,19 @@ class _OrderMainPageState extends State<OrderMainPage> {
                 alignment: Alignment.center,
                 child: Material(
                   child: InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => OrderTakeawayPage()));
+                    },
                     child: Ink(
                       height: 150,
                       width: double.infinity,
-                      decoration: BoxDecoration(color: Colors.green),
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: AssetImage(
+                                  'assets/images/btn-takeaway.jpg'))),
                     ),
                   ),
                 ),

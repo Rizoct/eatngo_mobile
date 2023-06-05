@@ -78,6 +78,8 @@ flutter:
     - assets/images/logo-no-background.png
     - assets/images/bg-main.jpg
     - assets/images/bg-alt.jpg
+    - assets/images/btn-dine-in.jpg
+    - assets/images/btn-takeaway.jpg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

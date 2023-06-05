@@ -122,7 +122,7 @@ class OrderButton extends StatelessWidget {
                       side: BorderSide(color: Colors.black)))),
           child: Text(
             ButtonText,
-            style: TextStyle(fontSize: 19),
+            style: TextStyle(fontSize: 16),
           )),
     );
   }

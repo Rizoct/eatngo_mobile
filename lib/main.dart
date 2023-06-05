@@ -2,6 +2,8 @@
 
 import 'package:eatngo_thesis/screens_customer/mainmenu_customer.dart';
 import 'package:eatngo_thesis/screens_loginregister/login_main.dart';
+import 'package:eatngo_thesis/screens_loginregister/register_customer.dart';
+import 'package:eatngo_thesis/screens_loginregister/register_main.dart';
 import 'package:flutter/material.dart';
 
 void main() {

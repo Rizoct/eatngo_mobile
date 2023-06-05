@@ -19,7 +19,8 @@ List<LatLng> polygonPoints = [
 ];
 
 class MapLocationScreen extends StatefulWidget {
-  const MapLocationScreen({super.key});
+  final String restoName;
+  const MapLocationScreen({super.key, required this.restoName});
 
   @override
   State<MapLocationScreen> createState() => _MapLocationScreenState();
@@ -56,7 +57,7 @@ class _MapLocationScreenState extends State<MapLocationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('<nama resto> Location')),
+      appBar: AppBar(title: Text('${widget.restoName} Location')),
       body: Stack(
         children: [
           GoogleMap(

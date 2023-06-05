@@ -16,15 +16,26 @@ class MenuTab extends StatefulWidget {
 }
 
 class _MenuTabState extends State<MenuTab> {
-  final List<String> data = List<String>.generate(10, (i) => 'Makanan $i');
-  final List<Widget> imageSliders = imgList
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _currentIndex = 0;
+  }
+
+  int _currentIndex = 0;
+  final List<Widget> imageSliders = menuListWithTitle
       .map((item) => Container(
             margin: EdgeInsets.all(5.0),
             child: ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(5.0)),
                 child: Stack(
                   children: <Widget>[
-                    Image.network(item, fit: BoxFit.cover, width: 1000.0),
+                    Image.network(
+                        menuListWithTitle[menuListWithTitle.indexOf(item)]
+                            ['img'],
+                        fit: BoxFit.cover,
+                        width: 1000.0),
                     Positioned(
                       bottom: 0.0,
                       left: 0.0,
@@ -43,7 +54,8 @@ class _MenuTabState extends State<MenuTab> {
                         padding: EdgeInsets.symmetric(
                             vertical: 10.0, horizontal: 20.0),
                         child: Text(
-                          'Best seller ${imgList.indexOf(item)}',
+                          menuListWithTitle[menuListWithTitle.indexOf(item)]
+                              ['title'],
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 20.0,
@@ -65,11 +77,17 @@ class _MenuTabState extends State<MenuTab> {
           padding: const EdgeInsets.all(8.0),
           child: CarouselSlider(
             options: CarouselOptions(
-              autoPlay: true,
-              aspectRatio: 2.0,
-              enlargeCenterPage: true,
-              enlargeStrategy: CenterPageEnlargeStrategy.height,
-            ),
+                autoPlay: true,
+                aspectRatio: 2.0,
+                enlargeCenterPage: true,
+                enlargeStrategy: CenterPageEnlargeStrategy.height,
+                onPageChanged: (index, reason) {
+                  setState(
+                    () {
+                      _currentIndex = index;
+                    },
+                  );
+                }),
             items: imageSliders,
           ),
         ),
@@ -85,13 +103,13 @@ class _MenuTabState extends State<MenuTab> {
         ListView.builder(
           shrinkWrap: true,
           physics: ScrollPhysics(),
-          itemCount: data.length,
+          itemCount: menuListWithTitle.length,
           itemBuilder: (context, index) {
             return MenuCard(
-              imgStr: '',
-              menuDesc: 'Tes Desc',
-              menuName: 'Menu $index',
-              menuPrice: Random().nextInt(7) * 1000,
+              imgStr: menuListWithTitle[index]['img'],
+              menuDesc: menuListWithTitle[index]['desc'],
+              menuName: menuListWithTitle[index]['title'],
+              menuPrice: menuListWithTitle[index]['price'],
             );
           },
         ),

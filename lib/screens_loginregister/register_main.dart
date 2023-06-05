@@ -104,7 +104,7 @@ class _RegisterMainPageState extends State<RegisterMainPage> {
                                   ButtonText: 'Register as Customer',
                                 ),
                             openBuilder: (context, _) =>
-                                RegisterCustomerPage()),
+                                RegisterCustomerpage()),
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(

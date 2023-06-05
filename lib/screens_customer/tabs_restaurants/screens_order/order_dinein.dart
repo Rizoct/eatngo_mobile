@@ -15,65 +15,41 @@ class OrderDineInPage extends StatefulWidget {
 class _OrderDineInPageState extends State<OrderDineInPage> {
   final List _elements = [
     {
-      'name': 'Tempe',
+      'name': 'Mie Setan',
+      'img':
+          'https://i0.wp.com/resepkoki.id/wp-content/uploads/2020/03/Resep-Mie-Setan.jpg?fit=1079%2C1214&ssl=1',
       'group': 'Makanan',
-      'desc': 'Bukan Tahu',
+      'desc': 'Classic Noodle',
       'orderQuantity': 0,
-      'price': 2000,
+      'price': 12000,
       'isZero': true,
     },
     {
-      'name': 'Tahu',
+      'name': 'Mie Coklat',
+      'img':
+          'https://static.wikia.nocookie.net/mrfz/images/d/d5/Wrath_of_Siracusans.png',
       'group': 'Makanan',
-      'desc': 'Bukan Tahu',
+      'desc': 'Wrath of Siracusans',
       'orderQuantity': 0,
-      'price': 2000,
+      'price': 12000,
+      'isZero': true,
+    },
+    {
+      'name': 'Mie Iblis',
+      'img':
+          'https://sweetrip.id/wp-content/uploads/2022/05/anakjajanmadiun_101069686_108229544138194_4439188319363853729_n.jpg',
+      'group': 'Makanan',
+      'desc': 'Sweet Noodle',
+      'orderQuantity': 0,
+      'price': 12000,
       'isZero': true,
     },
     {
       'name': 'Es Teh',
+      'img':
+          'https://bebekbkb.com/wp-content/uploads/2020/02/es-teh-manis-1.jpg',
       'group': 'Minuman',
-      'desc': 'Bukan Tahu',
-      'orderQuantity': 0,
-      'price': 2000,
-      'isZero': true,
-    },
-    {
-      'name': 'Es Jeruk',
-      'group': 'Minuman',
-      'desc': 'Bukan Tahu',
-      'orderQuantity': 0,
-      'price': 2000,
-      'isZero': true,
-    },
-    {
-      'name': 'Ayam',
-      'group': 'Makanan',
-      'desc': 'Bukan Tahu',
-      'orderQuantity': 0,
-      'price': 2000,
-      'isZero': true,
-    },
-    {
-      'name': 'Soda Gembira',
-      'group': 'Minuman',
-      'desc': 'Bukan Tahu',
-      'orderQuantity': 0,
-      'price': 2000,
-      'isZero': true,
-    },
-    {
-      'name': 'French Fries',
-      'group': 'Snack',
-      'desc': 'Bukan Tahu',
-      'orderQuantity': 0,
-      'price': 2000,
-      'isZero': true,
-    },
-    {
-      'name': 'Hotdog',
-      'group': 'Snack',
-      'desc': 'Bukan Tahu',
+      'desc': 'Pelepas Dahaga',
       'orderQuantity': 0,
       'price': 2000,
       'isZero': true,
@@ -147,7 +123,7 @@ class _OrderDineInPageState extends State<OrderDineInPage> {
               child: MenuCardwithAdd(
                   menuName: element['name'],
                   menuDesc: element['desc'],
-                  imgStr: '',
+                  imgStr: element['img'],
                   menuPrice: element['price'],
                   orderQuantity: element['orderQuantity'],
                   onPressedAdd: () {
@@ -209,7 +185,9 @@ class MenuCardwithAdd extends StatelessWidget {
             children: [
               Container(
                 decoration: BoxDecoration(
-                    color: Colors.green,
+                    image: DecorationImage(
+                        image: NetworkImage(imgStr), fit: BoxFit.fill),
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(10.0)),
                 width: 120,
                 height: MediaQuery.of(context).size.height,
@@ -223,7 +201,9 @@ class MenuCardwithAdd extends StatelessWidget {
                     ContentSubtitle(
                       title: menuName,
                     ),
-                    ContentSubtitle(title: menuDesc),
+                    Flexible(
+                        child:
+                            Container(child: ContentSubtitle(title: menuDesc))),
                     SizedBox(
                       width: 10,
                     ),

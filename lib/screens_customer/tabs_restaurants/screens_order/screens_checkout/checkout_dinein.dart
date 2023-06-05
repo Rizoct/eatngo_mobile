@@ -96,6 +96,9 @@ class _CheckOutDineInPageState extends State<CheckOutDineInPage> {
                                                                   OrderStatusPage(
                                                                     isFromOrder:
                                                                         true,
+                                                                    checkOutData:
+                                                                        widget
+                                                                            .checkOutData,
                                                                   )));
                                                     },
                                                     child: Text(
@@ -120,7 +123,7 @@ class _CheckOutDineInPageState extends State<CheckOutDineInPage> {
           itemCount: widget.checkOutData.length,
           itemBuilder: (BuildContext context, int index) {
             return MenuCardCheckout(
-              imgStr: '',
+              imgStr: widget.checkOutData[index]['img'],
               menuName: widget.checkOutData[index]['name'],
               menuDesc: widget.checkOutData[index]['desc'],
               menuPrice: widget.checkOutData[index]['price'],
@@ -165,7 +168,9 @@ class MenuCardCheckout extends StatelessWidget {
             children: [
               Container(
                 decoration: BoxDecoration(
-                    color: Colors.green,
+                    image: DecorationImage(
+                        image: NetworkImage(imgStr), fit: BoxFit.fill),
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(10.0)),
                 width: 120,
                 height: MediaQuery.of(context).size.height,
@@ -173,21 +178,21 @@ class MenuCardCheckout extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ContentSubtitle(
-                        title: menuName,
-                      ),
+                    ContentSubtitle(
+                      title: menuName,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'Rp.${fmf.output.nonSymbol}',
-                        style: TextStyle(fontSize: 16),
-                      ),
+                    Text(
+                      'Rp.${fmf.output.nonSymbol}',
+                      style: TextStyle(fontSize: 16),
                     ),
+                    ElevatedButton(
+                        onPressed: () {},
+                        child: Row(
+                          children: [Icon(Icons.note), Text(' Notes')],
+                        ))
                   ],
                 ),
               ),

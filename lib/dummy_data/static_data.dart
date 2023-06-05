@@ -1,9 +1,79 @@
 // Dummy data for image carousel
 final List<String> imgList = [
-  'https://images.unsplash.com/photo-1520342868574-5fa3804e551c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=6ff92caffcdd63681a35134a6770ed3b&auto=format&fit=crop&w=1951&q=80',
-  'https://images.unsplash.com/photo-1522205408450-add114ad53fe?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=368f45b0888aeb0b7b08e3a1084d3ede&auto=format&fit=crop&w=1950&q=80',
-  'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=94a1e718d89ca60a6337a6008341ca50&auto=format&fit=crop&w=1950&q=80',
-  'https://images.unsplash.com/photo-1523205771623-e0faa4d2813d?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=89719a0d55dd05e2deae4120227e6efc&auto=format&fit=crop&w=1953&q=80',
-  'https://images.unsplash.com/photo-1508704019882-f9cf40e475b4?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=8c6e5e3aba713b17aa1fe71ab4f0ae5b&auto=format&fit=crop&w=1352&q=80',
-  'https://images.unsplash.com/photo-1519985176271-adb1088fa94c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=a0c8d632e977f94e5d312d9893258f59&auto=format&fit=crop&w=1355&q=80'
+  'https://i0.wp.com/kliklegal.com/wp-content/uploads/2022/08/Mie-Gacoan-Tak-Bisa-Kantongi-Label-Halal-Benarkah.jpg',
+  'https://www.gotravelly.com/assets/img/culinary/gallery/2021/06/d1ff2a44b381e1b493c9296b60a8884c.jpg',
+  'https://www.malangculinary.com/upload/img_1615943174.jpg',
+  'https://media.suara.com/pictures/653x366/2021/09/01/84086-waroeng-steak-shake.jpg',
+  'https://gluttonwanderers.com/wp-content/uploads/2022/04/wp-1651241595022.jpg',
+];
+final List imgListWithTitle = [
+  {
+    'title': 'Mie Gacoan',
+    'img':
+        'https://i0.wp.com/kliklegal.com/wp-content/uploads/2022/08/Mie-Gacoan-Tak-Bisa-Kantongi-Label-Halal-Benarkah.jpg',
+    'address': 'Jl. Ciliwung No.55g Kota Malang',
+    'desc': 'MIE PEDAS No.1 di Indonesia #miegacoan #gacoanku',
+    'rating': 4.5,
+  },
+  {
+    'title': 'Steak Moen Moen',
+    'img':
+        'https://www.gotravelly.com/assets/img/culinary/gallery/2021/06/d1ff2a44b381e1b493c9296b60a8884c.jpg',
+    'address': 'Jalan jalan buntu',
+    'desc': 'MIE PEDAS No.1 di Indonesia #miegacoan #gacoanku',
+    'rating': 4.5,
+  },
+  {
+    'title': 'Steak and Shake',
+    'img': 'https://www.malangculinary.com/upload/img_1615943174.jpg',
+    'address': 'Jalan jalan buntu',
+    'desc': 'MIE PEDAS No.1 di Indonesia #miegacoan #gacoanku',
+    'rating': 4.5,
+  },
+  {
+    'title': 'Steak and Shake',
+    'img':
+        'https://media.suara.com/pictures/653x366/2021/09/01/84086-waroeng-steak-shake.jpg',
+    'address': 'Jalan jalan buntu',
+    'desc': 'MIE PEDAS No.1 di Indonesia #miegacoan #gacoanku',
+    'rating': 4.5,
+  },
+  {
+    'title': 'Ayam Goreng Tenes',
+    'img':
+        'https://gluttonwanderers.com/wp-content/uploads/2022/04/wp-1651241595022.jpg',
+    'address': 'Jalan jalan buntu',
+    'desc': 'MIE PEDAS No.1 di Indonesia #miegacoan #gacoanku',
+    'rating': 4.5,
+  },
+];
+
+final List menuListWithTitle = [
+  {
+    'title': 'Mie Setan',
+    'img':
+        'https://i0.wp.com/resepkoki.id/wp-content/uploads/2020/03/Resep-Mie-Setan.jpg?fit=1079%2C1214&ssl=1',
+    'desc': 'Classic Noodle',
+    'price': 12000,
+  },
+  {
+    'title': 'Mie Coklat',
+    'img':
+        'https://static.wikia.nocookie.net/mrfz/images/d/d5/Wrath_of_Siracusans.png',
+    'desc': 'Wrath of Siracusans',
+    'price': 12000,
+  },
+  {
+    'title': 'Mie Iblis',
+    'img':
+        'https://sweetrip.id/wp-content/uploads/2022/05/anakjajanmadiun_101069686_108229544138194_4439188319363853729_n.jpg',
+    'desc': 'From the Deepest Hell',
+    'price': 12000,
+  },
+];
+
+final List<String> imgListBestSeller = [
+  'https://i0.wp.com/resepkoki.id/wp-content/uploads/2020/03/Resep-Mie-Setan.jpg?fit=1079%2C1214&ssl=1',
+  'https://static.wikia.nocookie.net/mrfz/images/d/d5/Wrath_of_Siracusans.png',
+  'https://sweetrip.id/wp-content/uploads/2022/05/anakjajanmadiun_101069686_108229544138194_4439188319363853729_n.jpg',
 ];

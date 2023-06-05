@@ -19,15 +19,15 @@ class MainMenuCustomer extends StatefulWidget {
 }
 
 class _MainMenuCustomerState extends State<MainMenuCustomer> {
-  final List<String> data = List<String>.generate(10, (i) => 'Item $i');
-  final List<Widget> imageSliders = imgList
+  final List<Widget> imageSliders = imgListWithTitle
       .map((item) => Container(
             margin: EdgeInsets.all(5.0),
             child: ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(5.0)),
                 child: Stack(
                   children: <Widget>[
-                    Image.network(item, fit: BoxFit.cover, width: 1000.0),
+                    Image.network(item['img'],
+                        fit: BoxFit.cover, width: 1000.0),
                     Positioned(
                       bottom: 0.0,
                       left: 0.0,
@@ -46,7 +46,7 @@ class _MainMenuCustomerState extends State<MainMenuCustomer> {
                         padding: EdgeInsets.symmetric(
                             vertical: 10.0, horizontal: 20.0),
                         child: Text(
-                          'No. ${imgList.indexOf(item)} image',
+                          '${item['title']}',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 20.0,
@@ -116,18 +116,24 @@ class _MainMenuCustomerState extends State<MainMenuCustomer> {
             ListView.builder(
               shrinkWrap: true,
               physics: ScrollPhysics(),
-              itemCount: data.length,
+              itemCount: imgListWithTitle.length,
               itemBuilder: (context, index) {
                 return RestaurantMainCard(
-                  imgStr: 'tes',
-                  restaurantName: '<nama resto>',
-                  restaurantAddress: '<alamat resto>',
-                  restaurantRating: Random().nextInt(5).toDouble(),
+                  imgStr: imgListWithTitle[index]['img'],
+                  restaurantName: imgListWithTitle[index]['title'],
+                  restaurantAddress: imgListWithTitle[index]['address'],
+                  restaurantRating: imgListWithTitle[index]['rating'],
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => RestaurantViewCustomer(),
+                        builder: (context) => RestaurantViewCustomer(
+                          imgStr: imgListWithTitle[index]['img'],
+                          restaurantName: imgListWithTitle[index]['title'],
+                          restaurantAddress: imgListWithTitle[index]['address'],
+                          restaurantRating: imgListWithTitle[index]['rating'],
+                          restaurantDesc: imgListWithTitle[index]['desc'],
+                        ),
                       ),
                     );
                   },
