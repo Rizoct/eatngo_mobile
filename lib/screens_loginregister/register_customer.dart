@@ -109,7 +109,6 @@ class _RegisterCustomerpageState extends State<RegisterCustomerpage> {
         elevation: 10.0,
         shadowColor: Colors.black,
         child: TextFormField(
-          //controller: emailController,
           onChanged: (value) {
             setState(() {
               //emailLogin = value;

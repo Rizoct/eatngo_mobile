@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:eatngo_thesis/components/buttons.dart';
 import 'package:eatngo_thesis/components/cards.dart';
 import 'package:eatngo_thesis/components/texts.dart';
@@ -23,6 +25,7 @@ class _OrderDineInPageState extends State<OrderDineInPage> {
       'orderQuantity': 0,
       'price': 12000,
       'isZero': true,
+      'isAvailable': true,
     },
     {
       'name': 'Mie Coklat',
@@ -33,6 +36,7 @@ class _OrderDineInPageState extends State<OrderDineInPage> {
       'orderQuantity': 0,
       'price': 12000,
       'isZero': true,
+      'isAvailable': true,
     },
     {
       'name': 'Mie Iblis',
@@ -43,6 +47,7 @@ class _OrderDineInPageState extends State<OrderDineInPage> {
       'orderQuantity': 0,
       'price': 12000,
       'isZero': true,
+      'isAvailable': false,
     },
     {
       'name': 'Es Teh',
@@ -53,6 +58,7 @@ class _OrderDineInPageState extends State<OrderDineInPage> {
       'orderQuantity': 0,
       'price': 2000,
       'isZero': true,
+      'isAvailable': true,
     },
   ];
 
@@ -126,6 +132,7 @@ class _OrderDineInPageState extends State<OrderDineInPage> {
                   imgStr: element['img'],
                   menuPrice: element['price'],
                   orderQuantity: element['orderQuantity'],
+                  isAvailable: element['isAvailable'],
                   onPressedAdd: () {
                     setState(() {
                       isOrder = true;
@@ -157,16 +164,17 @@ class MenuCardwithAdd extends StatelessWidget {
   final VoidCallback onPressedAdd;
   final VoidCallback onPressedReduce;
   final int orderQuantity;
-  const MenuCardwithAdd({
-    super.key,
-    required this.imgStr,
-    required this.menuName,
-    required this.menuDesc,
-    required this.menuPrice,
-    required this.onPressedAdd,
-    required this.onPressedReduce,
-    required this.orderQuantity,
-  });
+  final bool isAvailable;
+  const MenuCardwithAdd(
+      {super.key,
+      required this.imgStr,
+      required this.menuName,
+      required this.menuDesc,
+      required this.menuPrice,
+      required this.onPressedAdd,
+      required this.onPressedReduce,
+      required this.orderQuantity,
+      required this.isAvailable});
 
   @override
   Widget build(BuildContext context) {
@@ -179,56 +187,80 @@ class MenuCardwithAdd extends StatelessWidget {
             border: Border.all(color: Colors.grey, width: 0.5)),
         width: double.infinity,
         height: 120,
-        child:
+        child: Stack(
+          children: [
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Row(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: NetworkImage(imgStr), fit: BoxFit.fill),
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10.0)),
-                width: 120,
-                height: MediaQuery.of(context).size.height,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ContentSubtitle(
-                      title: menuName,
+              Row(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: NetworkImage(imgStr), fit: BoxFit.fill),
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10.0)),
+                    width: 120,
+                    height: MediaQuery.of(context).size.height,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ContentSubtitle(
+                          title: menuName,
+                        ),
+                        Flexible(
+                            child: Container(
+                                child: ContentSubtitle(title: menuDesc))),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        ContentSubtitle(
+                          title: 'Rp. $menuPrice',
+                        ),
+                      ],
                     ),
-                    Flexible(
-                        child:
-                            Container(child: ContentSubtitle(title: menuDesc))),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    ContentSubtitle(
-                      title: 'Rp. $menuPrice',
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
-          Row(
-            children: [
-              (count != 0)
-                  ? IconButton(
-                      onPressed: onPressedReduce, icon: Icon(Icons.remove))
-                  : Container(),
-              Text(
-                orderQuantity.toString(),
-                style: TextStyle(color: Colors.black, fontSize: 18),
+              Row(
+                children: [
+                  (count != 0)
+                      ? IconButton(
+                          onPressed: onPressedReduce, icon: Icon(Icons.remove))
+                      : Container(),
+                  Text(
+                    orderQuantity.toString(),
+                    style: TextStyle(color: Colors.black, fontSize: 18),
+                  ),
+                  IconButton(onPressed: onPressedAdd, icon: Icon(Icons.add)),
+                ],
               ),
-              IconButton(onPressed: onPressedAdd, icon: Icon(Icons.add)),
-            ],
-          ),
-        ]),
+            ]),
+            (!isAvailable)
+                ? Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    color: Colors.black.withOpacity(0.5),
+                    child: Center(
+                        child: Container(
+                      height: 30,
+                      width: 100,
+                      decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(50)),
+                      child: Center(
+                        child: Text(
+                          'Sold Out',
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
+                      ),
+                    )),
+                  )
+                : Container(),
+          ],
+        ),
       ),
     );
   }

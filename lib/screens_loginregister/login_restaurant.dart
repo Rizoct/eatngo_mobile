@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names
 
 import 'dart:ui';
+import 'package:eatngo_thesis/screens_restaurant/mainmenu_restaurant.dart';
 import 'package:http/http.dart' as http;
 import 'package:eatngo_thesis/functions/connection.dart';
 import 'package:eatngo_thesis/components/texts.dart';
@@ -36,7 +37,7 @@ class _LoginRestaurantPageState extends State<LoginRestaurantPage> {
       response = await http.post(url, body: {
         "email": emailLogin,
         "password": password,
-        "role": 'restaurant',
+        "role": 'customer',
       });
     } catch (e) {
       setState(() {
@@ -122,6 +123,7 @@ class _LoginRestaurantPageState extends State<LoginRestaurantPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Stack(
@@ -288,6 +290,15 @@ class _LoginRestaurantPageState extends State<LoginRestaurantPage> {
                                       borderRadius: BorderRadius.circular(18.0),
                                     ))),
                                     onPressed: () {
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              MainMenuRestaurant(),
+                                        ),
+                                      );
+
+                                      /*
                                       if (emailController.text == '' ||
                                           passController.text == '') {
                                         Fluttertoast.showToast(
@@ -298,8 +309,16 @@ class _LoginRestaurantPageState extends State<LoginRestaurantPage> {
                                           toastLength: Toast.LENGTH_SHORT,
                                         );
                                       } else {
-                                        login();
+                                        //login();
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                MainMenuCustomer(),
+                                          ),
+                                        );
                                       }
+                                      */
                                     },
                                     child: Text(
                                       'LOG IN',

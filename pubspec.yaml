@@ -46,6 +46,7 @@ dependencies:
   http: ^0.13.4
   geolocator: ^9.0.2
   money_formatter: ^0.0.4
+  dropdown_button2: ^2.1.3
 
 dev_dependencies:
   flutter_test:
@@ -80,6 +81,9 @@ flutter:
     - assets/images/bg-alt.jpg
     - assets/images/btn-dine-in.jpg
     - assets/images/btn-takeaway.jpg
+    - assets/images/default-ava.jpg
+    - assets/images/btn-book.jpg
+    - assets/images/whatsapp_logo.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

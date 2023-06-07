@@ -2,6 +2,7 @@
 
 import 'package:eatngo_thesis/components/buttons.dart';
 import 'package:eatngo_thesis/components/texts.dart';
+import 'package:eatngo_thesis/screens_customer/tabs_restaurants/screens_order/order_booktable.dart';
 import 'package:eatngo_thesis/screens_customer/tabs_restaurants/screens_order/order_dinein.dart';
 import 'package:eatngo_thesis/screens_customer/tabs_restaurants/screens_order/order_takeaway.dart';
 import 'package:flutter/material.dart';
@@ -76,14 +77,15 @@ class _OrderMainPageState extends State<OrderMainPage> {
       appBar: AppBar(
         title: Text(widget.restoName),
         actions: [
+          /*
           IconButton(
               onPressed: () async {
                 _getCurrentLocation();
               },
-              icon: Icon(Icons.location_on))
+              icon: Icon(Icons.location_on))*/
         ],
       ),
-      bottomNavigationBar: Container(
+      /*bottomNavigationBar: Container(
         decoration: BoxDecoration(
             color: Colors.white, border: Border.all(color: Colors.black)),
         height: 110,
@@ -104,7 +106,7 @@ class _OrderMainPageState extends State<OrderMainPage> {
                 OrderButton(ButtonText: 'BOOK A TABLE', onPressed: () {})
               ]),
         ),
-      ),
+      ),*/
       body: SizedBox(
         height: double.infinity,
         width: double.infinity,
@@ -121,8 +123,8 @@ class _OrderMainPageState extends State<OrderMainPage> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10.0),
-              child:
-                  ContentSubtitle(title: 'Please choose dine-in or takeaway'),
+              child: ContentSubtitle(
+                  title: 'Please choose Dine-In or Takeaway or Book a Table'),
             ),
             SizedBox(
               height: 10,
@@ -173,6 +175,32 @@ class _OrderMainPageState extends State<OrderMainPage> {
                           image: DecorationImage(
                               image: AssetImage(
                                   'assets/images/btn-takeaway.jpg'))),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              child: Align(
+                alignment: Alignment.center,
+                child: Material(
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BookTablePage()));
+                    },
+                    child: Ink(
+                      height: 150,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: AssetImage('assets/images/btn-book.jpg'))),
                     ),
                   ),
                 ),

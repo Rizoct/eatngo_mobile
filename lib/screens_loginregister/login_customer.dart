@@ -122,6 +122,7 @@ class _LoginCustomerPageState extends State<LoginCustomerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Stack(

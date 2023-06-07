@@ -33,6 +33,23 @@ class ContentTitle extends StatelessWidget {
   }
 }
 
+class TitleMain extends StatelessWidget {
+  final String title;
+  const TitleMain({super.key, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      title,
+      style: TextStyle(
+        color: Colors.black,
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+}
+
 class ContentSubtitle extends StatelessWidget {
   final String title;
   const ContentSubtitle({super.key, required this.title});
@@ -65,6 +82,45 @@ class RichTextBoldTail extends StatelessWidget {
           TextSpan(
               text: bold,
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+        ],
+      ),
+    );
+  }
+}
+
+class RichTextBoldTailWhite extends StatelessWidget {
+  final String nonBold;
+  final String bold;
+  const RichTextBoldTailWhite(
+      {super.key, required this.nonBold, required this.bold});
+
+  @override
+  Widget build(BuildContext context) {
+    return RichText(
+      text: TextSpan(
+        text: nonBold,
+        style: TextStyle(color: Colors.white, fontSize: 18),
+        children: <TextSpan>[
+          (bold == 'Accepted')
+              ? TextSpan(
+                  text: bold,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Color.fromARGB(255, 67, 221, 146)))
+              : (bold == 'Pending')
+                  ? TextSpan(
+                      text: bold,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                          color: Colors.yellow))
+                  : TextSpan(
+                      text: bold,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                          color: Colors.red))
         ],
       ),
     );
