@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, use_build_context_synchronously
 
 import 'dart:ui';
 import 'package:http/http.dart' as http;
@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:eatngo_thesis/components/textboxs.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginCustomerPage extends StatefulWidget {
   const LoginCustomerPage({Key? key}) : super(key: key);
@@ -26,10 +27,20 @@ class _LoginCustomerPageState extends State<LoginCustomerPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passController = TextEditingController();
 
-  Future login() async {
-    setState(() {
-      isLoading = true;
-    });
+  void autoLoginChecker() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    print(prefs.getString('username'));
+    if (prefs.getString('username') != null) {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      setState(() {
+        emailLogin = prefs.getString('username')!;
+        password = prefs.getString('password')!;
+      });
+      login();
+    }
+  }
+
+  void login() async {
     var response;
     var url = Uri.http(ip, '/API_EatNGo/login.php', {'q': '{http}'});
     try {
@@ -80,7 +91,9 @@ class _LoginCustomerPageState extends State<LoginCustomerPage> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => MainMenuCustomer(),
+              builder: (context) => MainMenuCustomer(
+                data: data,
+              ),
             ),
           );
         } else {
@@ -103,20 +116,19 @@ class _LoginCustomerPageState extends State<LoginCustomerPage> {
         toastLength: Toast.LENGTH_SHORT,
       );
     }
-    /*
+
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('username', username!);
+    prefs.setString('username', emailLogin!);
     prefs.setString('password', password!);
-    */
   }
 
   @override
   void initState() {
-    // TODO: implement initState
-    super.initState();
+    autoLoginChecker();
     errormsg = "";
     error = false;
     isLoading = false;
+    super.initState();
   }
 
   @override
@@ -299,14 +311,7 @@ class _LoginCustomerPageState extends State<LoginCustomerPage> {
                                           toastLength: Toast.LENGTH_SHORT,
                                         );
                                       } else {
-                                        //login();
-                                        Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                MainMenuCustomer(),
-                                          ),
-                                        );
+                                        login();
                                       }
                                     },
                                     child: Text(

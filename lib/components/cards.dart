@@ -222,6 +222,7 @@ class VoucherCard extends StatelessWidget {
   final String imgStr;
   final String menuName;
   final String menuDesc;
+  final String dateStart;
   final String dateEnd;
 
   const VoucherCard({
@@ -230,6 +231,7 @@ class VoucherCard extends StatelessWidget {
     required this.imgStr,
     required this.menuName,
     required this.menuDesc,
+    required this.dateStart,
     required this.dateEnd,
   });
 
@@ -270,6 +272,73 @@ class VoucherCard extends StatelessWidget {
                 ),
               ],
             ),
+          )
+        ]),
+      ),
+    );
+  }
+}
+
+class VoucherCardRestaurant extends StatelessWidget {
+  final String imgStr;
+  final String promoName;
+  final String promoDesc;
+  final String dateEnd;
+
+  const VoucherCardRestaurant({
+    super.key,
+    required this.imgStr,
+    required this.promoName,
+    required this.promoDesc,
+    required this.dateEnd,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.0),
+            border: Border.all(color: Colors.grey, width: 0.5)),
+        width: double.infinity,
+        height: 100,
+        child: Row(children: [
+          Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.0),
+                image: DecorationImage(
+                    image: NetworkImage(imgStr), fit: BoxFit.fill)),
+            width: 100,
+            height: MediaQuery.of(context).size.height,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ContentTitle(
+                  title: '$promoName',
+                ),
+                ContentSubtitle(title: promoDesc),
+                SizedBox(
+                  width: 10,
+                ),
+                ContentSubtitle(
+                  title: 'Tanggal mulai: $dateEnd',
+                ),
+                ContentSubtitle(
+                  title: 'Tanggal berakhir: $dateEnd',
+                ),
+              ],
+            ),
+          ),
+          Row(
+            children: [
+              IconButton(onPressed: () {}, icon: Icon(Icons.edit)),
+              IconButton(onPressed: () {}, icon: Icon(Icons.delete))
+            ],
           )
         ]),
       ),
@@ -319,22 +388,27 @@ class HistoryCard extends StatelessWidget {
                 ContentTitle(
                   title: restoName,
                 ),
-                RatingBar.builder(
-                  itemSize: 25,
-                  initialRating: rating,
-                  minRating: 1,
-                  direction: Axis.horizontal,
-                  allowHalfRating: true,
-                  itemCount: 5,
-                  itemPadding: EdgeInsets.symmetric(horizontal: 1.0),
-                  itemBuilder: (context, _) => Icon(
-                    Icons.star,
-                    color: Colors.amber,
-                  ),
-                  onRatingUpdate: (rating) {
-                    print(rating);
-                  },
-                ),
+                (rating != 0.0)
+                    ? RatingBar.builder(
+                        itemSize: 25,
+                        initialRating: rating,
+                        minRating: 1,
+                        direction: Axis.horizontal,
+                        allowHalfRating: true,
+                        itemCount: 5,
+                        itemPadding: EdgeInsets.symmetric(horizontal: 1.0),
+                        itemBuilder: (context, _) => Icon(
+                          Icons.star,
+                          color: Colors.amber,
+                        ),
+                        onRatingUpdate: (rating) {
+                          print(rating);
+                        },
+                      )
+                    : (Text(
+                        'No Rating Yet',
+                        style: TextStyle(color: Colors.red),
+                      )),
                 ContentSubtitle(
                   title: date,
                 ),

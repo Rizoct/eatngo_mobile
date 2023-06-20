@@ -81,7 +81,7 @@ class _LoginRestaurantPageState extends State<LoginRestaurantPage> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => MainMenuCustomer(),
+              builder: (context) => MainMenuRestaurant(),
             ),
           );
         } else {

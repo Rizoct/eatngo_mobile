@@ -2,6 +2,8 @@
 
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:eatngo_thesis/components/texts.dart';
+import 'package:eatngo_thesis/drawers/restaurantDrawer.dart';
+import 'package:eatngo_thesis/screens_restaurant/screens_booking/booking_main.dart';
 import 'package:eatngo_thesis/screens_restaurant/screens_editmenu/editmenu_category.dart';
 import 'package:eatngo_thesis/screens_restaurant/screens_vieworder/vieworder_main.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +27,7 @@ class _MainMenuRestaurantState extends State<MainMenuRestaurant> {
       appBar: AppBar(
         title: Text('Mie Gacoan'),
       ),
-      drawer: Drawer(),
+      drawer: RestaurantDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
@@ -121,7 +123,12 @@ class _MainMenuRestaurantState extends State<MainMenuRestaurant> {
             ),
             RestaurantMenuButton(
               text: 'View Booking',
-              onpressed: () {},
+              onpressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => BookingMainPage()));
+              },
             ),
           ],
         ),

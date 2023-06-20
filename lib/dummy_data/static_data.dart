@@ -127,7 +127,7 @@ final List historyList = [
     'resto': 'Ayam Goreng Tenes',
     'img':
         'https://gluttonwanderers.com/wp-content/uploads/2022/04/wp-1651241595022.jpg',
-    'rating': 5.0,
+    'rating': 0.0,
     'date': '12-10-2012',
   },
 ];

@@ -12,13 +12,16 @@ import 'package:animated_search_bar/animated_search_bar.dart';
 import 'dart:math';
 
 class MainMenuCustomer extends StatefulWidget {
-  const MainMenuCustomer({super.key});
+  final Map data;
+  const MainMenuCustomer({super.key, required this.data});
 
   @override
   State<MainMenuCustomer> createState() => _MainMenuCustomerState();
 }
 
 class _MainMenuCustomerState extends State<MainMenuCustomer> {
+  getUserData() {}
+
   final List<Widget> imageSliders = imgListWithTitle
       .map((item) => Container(
             margin: EdgeInsets.all(5.0),
@@ -85,7 +88,7 @@ class _MainMenuCustomerState extends State<MainMenuCustomer> {
             },
           ),
         ),
-        drawer: MainDrawer(),
+        drawer: MainDrawer(data: widget.data),
         body: ListView(
           children: [
             Padding(

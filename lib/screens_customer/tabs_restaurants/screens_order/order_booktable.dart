@@ -40,7 +40,6 @@ class _BookTablePageState extends State<BookTablePage> {
           ),
           Center(
             child: Container(
-                height: 400,
                 width: 350,
                 decoration: BoxDecoration(
                     border: Border.all(color: Colors.black),
@@ -48,6 +47,7 @@ class _BookTablePageState extends State<BookTablePage> {
                 child: Padding(
                   padding: const EdgeInsets.all(14.0),
                   child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Align(
                           alignment: Alignment.bottomLeft,
@@ -141,7 +141,7 @@ class _BookTablePageState extends State<BookTablePage> {
                           },
                           child: Text('Book Now'),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 )),

@@ -1,16 +1,15 @@
 // ignore_for_file: file_names, prefer_const_constructors
-import 'package:eatngo_thesis/functions/connection.dart';
-import 'package:eatngo_thesis/screens_customer/drawersmenu_customer/drawer_history.dart';
-import 'package:eatngo_thesis/screens_customer/drawersmenu_customer/drawer_profile.dart';
-import 'package:eatngo_thesis/screens_customer/drawersmenu_customer/drawer_promo.dart';
-import 'package:eatngo_thesis/screens_customer/drawersmenu_customer/drawer_queue.dart';
+import 'package:eatngo_thesis/screens_restaurant/drawersmenu_restaurant/drawer_profile_restaurant.dart';
+import 'package:eatngo_thesis/screens_restaurant/drawersmenu_restaurant/drawer_promo_restaurant.dart';
+import 'package:eatngo_thesis/screens_restaurant/drawersmenu_restaurant/drawer_viewrating.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-class MainDrawer extends StatelessWidget {
+class RestaurantDrawer extends StatelessWidget {
   final padding = EdgeInsets.symmetric(horizontal: 20);
-  final Map data;
-  MainDrawer({Key? key, required this.data}) : super(key: key);
+
+  RestaurantDrawer({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,15 +24,16 @@ class MainDrawer extends StatelessWidget {
                 height: 40,
               ),
               buildHeader(
-                urlImage: '$ip/API_EatNGo/customer/default-ava.jpg',
-                name: data["name"],
-                level: data["role"],
+                urlImage:
+                    'https://i0.wp.com/kliklegal.com/wp-content/uploads/2022/08/Mie-Gacoan-Tak-Bisa-Kantongi-Label-Halal-Benarkah.jpg',
+                name: 'Mie Gacoan',
+                level: 'Restaurant',
                 onClicked: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (BuildContext context) =>
-                              DrawerProfilePage()));
+                              DrawerProfileRestaurantPage()));
                 },
               ),
               const SizedBox(
@@ -44,36 +44,24 @@ class MainDrawer extends StatelessWidget {
                 height: 24,
               ),
               buildMenuItem(
-                  text: 'History',
-                  icon: Icons.history,
+                  text: 'View Rating',
+                  icon: Icons.star,
                   navigate: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (BuildContext context) =>
-                                DrawerHistoryPage()));
+                                DrawerViewRatingPage()));
                   }),
               buildMenuItem(
-                  text: 'Promo & Voucher',
+                  text: 'Add Promo',
                   icon: Icons.discount,
                   navigate: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (BuildContext context) =>
-                                DrawerPromoPage()));
-                  }),
-              buildMenuItem(
-                  text: 'My Order', icon: Icons.shopping_bag, navigate: () {}),
-              buildMenuItem(
-                  text: 'Queue Number',
-                  icon: Icons.numbers,
-                  navigate: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                DrawerQueuePage()));
+                                DrawerViewPromoPage()));
                   }),
               Expanded(
                 child: Align(
@@ -81,14 +69,7 @@ class MainDrawer extends StatelessWidget {
                   child: buildMenuItem(
                       text: 'Logout',
                       icon: Icons.logout,
-                      navigate: () async {
-                        final SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-                        await prefs.remove('username');
-                        await prefs.remove('password');
-                        print('tes');
-                        Navigator.of(context).pop();
-                      }),
+                      navigate: () async {}),
                 ),
               )
             ],
@@ -132,10 +113,9 @@ class MainDrawer extends StatelessWidget {
           child: Row(
             children: [
               CircleAvatar(
-                radius: 50,
-                backgroundColor: Colors.black,
-                backgroundImage: AssetImage('assets/images/default-ava.jpg'),
-              ),
+                  radius: 50,
+                  backgroundColor: Colors.black,
+                  backgroundImage: NetworkImage(urlImage)),
               SizedBox(width: 20),
               Expanded(
                 child: Column(

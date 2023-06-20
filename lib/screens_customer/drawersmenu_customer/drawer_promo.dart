@@ -25,6 +25,7 @@ class _DrawerPromoPageState extends State<DrawerPromoPage> {
             menuDesc: voucherList[index]['desc'],
             menuName: voucherList[index]['title'],
             dateEnd: voucherList[index]['date-end'],
+            dateStart: voucherList[index]['date-start'],
           );
         },
       ),

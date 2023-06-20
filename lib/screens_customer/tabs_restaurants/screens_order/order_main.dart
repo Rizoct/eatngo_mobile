@@ -7,31 +7,51 @@ import 'package:eatngo_thesis/screens_customer/tabs_restaurants/screens_order/or
 import 'package:eatngo_thesis/screens_customer/tabs_restaurants/screens_order/order_takeaway.dart';
 import 'package:flutter/material.dart';
 import 'package:eatngo_thesis/functions/locationChecker.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:maps_toolkit/maps_toolkit.dart' as map_tool;
 
 class OrderMainPage extends StatefulWidget {
   final String restoName;
+
   const OrderMainPage({super.key, required this.restoName});
 
   @override
   State<OrderMainPage> createState() => _OrderMainPageState();
 }
 
-class _OrderMainPageState extends State<OrderMainPage> {
+class _OrderMainPageState extends State<OrderMainPage>
+    with TickerProviderStateMixin {
+  late bool isInArea;
+  bool isLoading = false;
+
+  List<LatLng> polygonPoints = [
+    LatLng(37.42196848343084, -122.08423649936343),
+    LatLng(37.42213548845506, -122.08428196658853),
+    LatLng(37.42211292023034, -122.08383013603876),
+    LatLng(37.421921090045295, -122.08390686198118)
+  ];
+
+/*
+  List<LatLng> polygonPoints = [
+    LatLng(-7.939301, 112.681721),
+    LatLng(-7.940614, 112.680725),
+    LatLng(-7.939933, 112.679946),
+    LatLng(-7.938813, 112.681187),
+  ];
+*/
   Position? position;
+  LatLng? convertedPosition = LatLng(0, 0);
+
   void _getCurrentLocation() async {
+    setState(() {
+      convertedPosition = null;
+    });
     Position position = await _determinePosition();
     setState(() {
-      position = position;
+      convertedPosition = LatLng(position.latitude, position.longitude);
     });
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Your Position'),
-            content: SelectableText(position.toString()),
-          );
-        });
   }
 
   Future<Position> _determinePosition() async {
@@ -71,18 +91,45 @@ class _OrderMainPageState extends State<OrderMainPage> {
     return await Geolocator.getCurrentPosition();
   }
 
+  void CheckUpdatedLocation(LatLng pointLatLng) {
+    List<map_tool.LatLng> convatedPolygonPoints = polygonPoints
+        .map((point) => map_tool.LatLng(point.latitude, point.longitude))
+        .toList();
+
+    setState(() {
+      if (isInArea = map_tool.PolygonUtil.containsLocation(
+          map_tool.LatLng(pointLatLng.latitude, pointLatLng.longitude),
+          convatedPolygonPoints,
+          false)) {
+        print('in area');
+        setState(() {
+          isInArea = true;
+        });
+      } else {
+        print('outside area');
+        isInArea = false;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.restoName),
         actions: [
-          /*
           IconButton(
               onPressed: () async {
                 _getCurrentLocation();
+                Future.delayed(const Duration(seconds: 5), () {
+                  CheckUpdatedLocation(
+                      convertedPosition!); // Prints after 1 second.
+                });
+                setState(() {
+                  isLoading = false;
+                });
               },
-              icon: Icon(Icons.location_on))*/
+              icon: Icon(Icons.location_on))
         ],
       ),
       /*bottomNavigationBar: Container(
@@ -107,107 +154,145 @@ class _OrderMainPageState extends State<OrderMainPage> {
               ]),
         ),
       ),*/
-      body: SizedBox(
-        height: double.infinity,
-        width: double.infinity,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            SizedBox(
-              height: 10,
+      body: Stack(
+        children: [
+          SizedBox(
+            height: double.infinity,
+            width: double.infinity,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                      child: ContentSubtitle(title: 'Order Your Food'),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                      child: ContentSubtitle(
+                          title:
+                              'Please choose Dine-In or Takeaway or Book a Table'),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Material(
+                          child: InkWell(
+                            onTap: () async {
+                              _getCurrentLocation();
+                              Future.delayed(const Duration(seconds: 5), () {
+                                CheckUpdatedLocation(
+                                    convertedPosition!); // Prints after 1 second.
+                              });
+                              setState(() {
+                                isLoading = false;
+                              });
+                              if (isInArea) {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            OrderDineInPage()));
+                              } else {
+                                Fluttertoast.showToast(
+                                  fontSize: 16,
+                                  msg: 'Anda diluar area restoran!!',
+                                  backgroundColor: Colors.red,
+                                  textColor: Colors.white,
+                                  toastLength: Toast.LENGTH_SHORT,
+                                );
+                              }
+                            },
+                            child: Ink(
+                              height: 150,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          'assets/images/btn-dine-in.jpg'))),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Material(
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          OrderTakeawayPage()));
+                            },
+                            child: Ink(
+                              height: 150,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          'assets/images/btn-takeaway.jpg'))),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Material(
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => BookTablePage()));
+                            },
+                            child: Ink(
+                              height: 150,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          'assets/images/btn-book.jpg'))),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ]),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10.0),
-              child: ContentSubtitle(title: 'Order Your Food'),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10.0),
-              child: ContentSubtitle(
-                  title: 'Please choose Dine-In or Takeaway or Book a Table'),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: Align(
-                alignment: Alignment.center,
-                child: Material(
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => OrderDineInPage()));
-                    },
-                    child: Ink(
-                      height: 150,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image:
-                                  AssetImage('assets/images/btn-dine-in.jpg'))),
+          ),
+          convertedPosition == null
+              ? Container(
+                  color: Colors.grey.withOpacity(0.5),
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.indigo.shade400,
+                      strokeWidth: 5,
                     ),
                   ),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: Align(
-                alignment: Alignment.center,
-                child: Material(
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => OrderTakeawayPage()));
-                    },
-                    child: Ink(
-                      height: 150,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image: AssetImage(
-                                  'assets/images/btn-takeaway.jpg'))),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: Align(
-                alignment: Alignment.center,
-                child: Material(
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => BookTablePage()));
-                    },
-                    child: Ink(
-                      height: 150,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image: AssetImage('assets/images/btn-book.jpg'))),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ]),
-        ),
+                )
+              : Container()
+        ],
       ),
     );
   }
