@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:eatngo_thesis/components/textboxs.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginRestaurantPage extends StatefulWidget {
   const LoginRestaurantPage({Key? key}) : super(key: key);
@@ -27,6 +28,19 @@ class _LoginRestaurantPageState extends State<LoginRestaurantPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passController = TextEditingController();
 
+  void autoLoginChecker() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    print(prefs.getString('usernameRestaurant'));
+    if (prefs.getString('usernameRestaurant') != null) {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      setState(() {
+        emailLogin = prefs.getString('usernameRestaurant')!;
+        password = prefs.getString('passwordRestaurant')!;
+      });
+      login();
+    }
+  }
+
   Future login() async {
     setState(() {
       isLoading = true;
@@ -37,7 +51,7 @@ class _LoginRestaurantPageState extends State<LoginRestaurantPage> {
       response = await http.post(url, body: {
         "email": emailLogin,
         "password": password,
-        "role": 'customer',
+        "role": 'restaurant',
       });
     } catch (e) {
       setState(() {
@@ -104,16 +118,16 @@ class _LoginRestaurantPageState extends State<LoginRestaurantPage> {
         toastLength: Toast.LENGTH_SHORT,
       );
     }
-    /*
+
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('username', username!);
-    prefs.setString('password', password!);
-    */
+    prefs.setString('usernameRestaurant', emailLogin!);
+    prefs.setString('passwordRestaurant', password!);
   }
 
   @override
   void initState() {
     // TODO: implement initState
+    autoLoginChecker();
     super.initState();
     errormsg = "";
     error = false;
@@ -290,13 +304,18 @@ class _LoginRestaurantPageState extends State<LoginRestaurantPage> {
                                       borderRadius: BorderRadius.circular(18.0),
                                     ))),
                                     onPressed: () {
-                                      Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              MainMenuRestaurant(),
-                                        ),
-                                      );
+                                      if (emailController.text == '' ||
+                                          passController.text == '') {
+                                        Fluttertoast.showToast(
+                                          backgroundColor: Colors.red,
+                                          textColor: Colors.white,
+                                          msg:
+                                              'Please Fill Your Email and Password',
+                                          toastLength: Toast.LENGTH_SHORT,
+                                        );
+                                      } else {
+                                        login();
+                                      }
 
                                       /*
                                       if (emailController.text == '' ||

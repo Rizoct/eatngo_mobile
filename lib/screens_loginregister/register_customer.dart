@@ -1,8 +1,13 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
 import 'package:eatngo_thesis/components/texts.dart';
+import 'package:eatngo_thesis/screens_loginregister/login_customer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:http/http.dart' as http;
+import 'package:eatngo_thesis/functions/connection.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RegisterCustomerpage extends StatefulWidget {
   const RegisterCustomerpage({super.key});
@@ -12,11 +17,65 @@ class RegisterCustomerpage extends StatefulWidget {
 }
 
 class _RegisterCustomerpageState extends State<RegisterCustomerpage> {
+  bool isLoading = false;
+  TextEditingController name = TextEditingController();
+  TextEditingController phonenumber = TextEditingController();
+  TextEditingController email = TextEditingController();
+  TextEditingController location = TextEditingController();
+  TextEditingController password = TextEditingController();
+  TextEditingController respassword = TextEditingController();
+
+  Future register() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    var uri = Uri.http(ip, '/API_EatNGo/register.php', {'q': '{http}'});
+    final response = await http.post(uri, body: {
+      'register_type': 'customer',
+      'name': name.text,
+      'phonenumber': phonenumber.text,
+      'email': email.text,
+      'location': location.text,
+      'password': password.text,
+    });
+
+    if (response.statusCode == 200) {
+      Fluttertoast.showToast(
+        msg: 'Sukses Register',
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        toastLength: Toast.LENGTH_SHORT,
+      );
+      setState(() {
+        isLoading = false;
+      });
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('username', email.text);
+      prefs.setString('password', password.text);
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => LoginCustomerPage()));
+    } else {
+      print(response.statusCode);
+      Fluttertoast.showToast(
+        msg: 'Gagal Register',
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        toastLength: Toast.LENGTH_SHORT,
+      );
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Register as Customer')),
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       bottomNavigationBar: BottomAppBar(
         color: Colors.transparent,
         elevation: 0,
@@ -33,7 +92,23 @@ class _RegisterCustomerpageState extends State<RegisterCustomerpage> {
                           RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(18.0),
                   ))),
-                  onPressed: () {},
+                  onPressed: () {
+                    if (name.text == '' ||
+                        phonenumber.text == '' ||
+                        email.text == '' ||
+                        location.text == '' ||
+                        password.text == '' ||
+                        respassword.text == '') {
+                      Fluttertoast.showToast(
+                        msg: 'Harap isi semua form!!',
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        toastLength: Toast.LENGTH_SHORT,
+                      );
+                    } else {
+                      register();
+                    }
+                  },
                   child: Text(
                     'Register',
                     style: TextStyle(fontSize: 18),
@@ -76,16 +151,16 @@ class _RegisterCustomerpageState extends State<RegisterCustomerpage> {
                   SizedBox(
                     height: 20,
                   ),
-                  textFieldInput('Name'),
-                  textFieldInput('Phone Number'),
-                  textFieldInput('Email'),
-                  textFieldInput('Location'),
+                  textFieldInput('Name', name),
+                  textFieldInput('Phone Number', phonenumber),
+                  textFieldInput('Email', email),
+                  textFieldInput('Location', location),
                   Divider(
                     height: 20,
                     color: Colors.white,
                   ),
-                  textFieldPassword('Password'),
-                  textFieldPassword('Re-enter Password'),
+                  textFieldPassword('Password', password),
+                  textFieldPassword('Re-enter Password', respassword),
                   SizedBox(
                     height: 20,
                   ),
@@ -97,23 +172,30 @@ class _RegisterCustomerpageState extends State<RegisterCustomerpage> {
               SizedBox(height: 30),
             ],
           ),
+          isLoading
+              ? Container(
+                  color: Colors.grey.withOpacity(0.5),
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.indigo.shade400,
+                      strokeWidth: 5,
+                    ),
+                  ),
+                )
+              : Container()
         ],
       ),
     );
   }
 
-  Padding textFieldInput(String hint) {
+  Padding textFieldInput(String hint, TextEditingController ctrl) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Material(
         elevation: 10.0,
         shadowColor: Colors.black,
         child: TextFormField(
-          onChanged: (value) {
-            setState(() {
-              //emailLogin = value;
-            });
-          },
+          controller: ctrl,
           autofocus: false,
           decoration: InputDecoration(
               hintText: hint,
@@ -128,19 +210,14 @@ class _RegisterCustomerpageState extends State<RegisterCustomerpage> {
     );
   }
 
-  Padding textFieldPassword(String hint) {
+  Padding textFieldPassword(String hint, TextEditingController ctrl) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Material(
         elevation: 10.0,
         shadowColor: Colors.black,
         child: TextFormField(
-          //controller: passController,
-          onChanged: (value) {
-            setState(() {
-              //password = value;
-            });
-          },
+          controller: ctrl,
           obscureText: true,
           autofocus: false,
           decoration: InputDecoration(

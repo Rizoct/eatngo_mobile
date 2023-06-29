@@ -4,6 +4,8 @@ import 'package:eatngo_thesis/screens_customer/drawersmenu_customer/drawer_histo
 import 'package:eatngo_thesis/screens_customer/drawersmenu_customer/drawer_profile.dart';
 import 'package:eatngo_thesis/screens_customer/drawersmenu_customer/drawer_promo.dart';
 import 'package:eatngo_thesis/screens_customer/drawersmenu_customer/drawer_queue.dart';
+import 'package:eatngo_thesis/screens_loginregister/login_customer.dart';
+import 'package:eatngo_thesis/screens_loginregister/login_main.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -82,12 +84,36 @@ class MainDrawer extends StatelessWidget {
                       text: 'Logout',
                       icon: Icons.logout,
                       navigate: () async {
-                        final SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-                        await prefs.remove('username');
-                        await prefs.remove('password');
-                        print('tes');
-                        Navigator.of(context).pop();
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                            title: const Text('Logout'),
+                            content: const Text(
+                                'Apakah anda ingin Logout dari aplikasi?'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.pop(context, 'Cancel'),
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () async {
+                                  final SharedPreferences prefs =
+                                      await SharedPreferences.getInstance();
+                                  await prefs.remove('username');
+                                  await prefs.remove('password');
+                                  print('tes');
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              LoginMainPage()));
+                                },
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          ),
+                        );
                       }),
                 ),
               )

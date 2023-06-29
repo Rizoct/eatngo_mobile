@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:eatngo_thesis/components/texts.dart';
+import 'package:eatngo_thesis/functions/connection.dart';
 import 'package:eatngo_thesis/screens_loginregister/login_customer.dart';
 import 'package:eatngo_thesis/screens_loginregister/login_restaurant.dart';
 import 'package:eatngo_thesis/screens_loginregister/register_main.dart';
@@ -9,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:eatngo_thesis/components/buttons.dart';
 import 'package:animations/animations.dart';
 import 'package:eatngo_thesis/components/buttons.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class LoginMainPage extends StatefulWidget {
   const LoginMainPage({super.key});
@@ -18,6 +21,18 @@ class LoginMainPage extends StatefulWidget {
 }
 
 class _LoginMainPageState extends State<LoginMainPage> {
+  final List jsontes = [
+    {'id': 1, 'quantity': 2},
+    {'id': 2, 'quantity': 6}
+  ];
+  Future jsontest() async {
+    var uri = Uri.http(ip, '/API_EatNGo/customer_order.php', {'q': '{http}'});
+    final response = await http.post(uri, body: {
+      'data': jsonEncode(jsontes),
+    });
+    print(response.statusCode);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -131,6 +146,11 @@ class _LoginMainPageState extends State<LoginMainPage> {
                                 ),
                             openBuilder: (context, _) => LoginRestaurantPage()),
                       ),
+                      ElevatedButton(
+                          onPressed: () {
+                            jsontest();
+                          },
+                          child: Text('tes json'))
                     ],
                   ),
                 ),

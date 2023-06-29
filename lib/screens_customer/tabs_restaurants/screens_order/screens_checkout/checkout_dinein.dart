@@ -22,6 +22,7 @@ class _CheckOutDineInPageState extends State<CheckOutDineInPage> {
   @override
   void initState() {
     // TODO: implement initState
+    print(widget.checkOutData);
     super.initState();
     totalCost = sum(widget.checkOutData);
     fmf = MoneyFormatter(amount: totalCost.toDouble());
