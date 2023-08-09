@@ -14,8 +14,13 @@ import 'package:maps_toolkit/maps_toolkit.dart' as map_tool;
 
 class OrderMainPage extends StatefulWidget {
   final String restoName;
-
-  const OrderMainPage({super.key, required this.restoName});
+  final Map<String, dynamic> data;
+  final Map<dynamic, dynamic> userData;
+  const OrderMainPage(
+      {super.key,
+      required this.restoName,
+      required this.data,
+      required this.userData});
 
   @override
   State<OrderMainPage> createState() => _OrderMainPageState();
@@ -40,7 +45,16 @@ class _OrderMainPageState extends State<OrderMainPage>
     LatLng(-7.939933, 112.679946),
     LatLng(-7.938813, 112.681187),
   ];
-*/
+  */
+
+  @override
+  void initState() {
+    print(widget.data);
+    print(widget.userData);
+    // TODO: implement initState
+    super.initState();
+  }
+
   Position? position;
   LatLng? convertedPosition = LatLng(0, 0);
 
@@ -57,13 +71,8 @@ class _OrderMainPageState extends State<OrderMainPage>
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
-
-    // Test if location services are enabled.
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      // Location services are not enabled don't continue
-      // accessing the position and request users of the
-      // App to enable the location services.
       return Future.error('Location services are disabled.');
     }
 
@@ -71,23 +80,14 @@ class _OrderMainPageState extends State<OrderMainPage>
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        // Permissions are denied, next time you could try
-        // requesting permissions again (this is also where
-        // Android's shouldShowRequestPermissionRationale
-        // returned true. According to Android guidelines
-        // your App should show an explanatory UI now.
         return Future.error('Location permissions are denied');
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
     }
-
-    // When we reach here, permissions are granted and we can
-    // continue accessing the position of the device.
     return await Geolocator.getCurrentPosition();
   }
 
@@ -104,10 +104,23 @@ class _OrderMainPageState extends State<OrderMainPage>
         print('in area');
         setState(() {
           isInArea = true;
+          Fluttertoast.showToast(
+            fontSize: 16,
+            msg: 'Anda didalam area restoran',
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+            toastLength: Toast.LENGTH_SHORT,
+          );
         });
       } else {
-        print('outside area');
         isInArea = false;
+        Fluttertoast.showToast(
+          fontSize: 16,
+          msg: 'Anda diluar area restoran',
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          toastLength: Toast.LENGTH_SHORT,
+        );
       }
     });
   }
@@ -187,24 +200,28 @@ class _OrderMainPageState extends State<OrderMainPage>
                         child: Material(
                           child: InkWell(
                             onTap: () async {
-                              _getCurrentLocation();
-                              Future.delayed(const Duration(seconds: 5), () {
-                                CheckUpdatedLocation(
-                                    convertedPosition!); // Prints after 1 second.
-                              });
-                              setState(() {
-                                isLoading = false;
-                              });
-                              if (isInArea) {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            OrderDineInPage()));
-                              } else {
+                              try {
+                                if (isInArea) {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => OrderDineInPage(
+                                              data: widget.data,
+                                              userData: widget.userData)));
+                                } else {
+                                  Fluttertoast.showToast(
+                                    fontSize: 16,
+                                    msg: 'Anda diluar area restoran!!',
+                                    backgroundColor: Colors.red,
+                                    textColor: Colors.white,
+                                    toastLength: Toast.LENGTH_SHORT,
+                                  );
+                                }
+                              } catch (e) {
                                 Fluttertoast.showToast(
                                   fontSize: 16,
-                                  msg: 'Anda diluar area restoran!!',
+                                  msg:
+                                      'Tekan tombol lokasi dipojok kanan atas terlebih dahulu!!',
                                   backgroundColor: Colors.red,
                                   textColor: Colors.white,
                                   toastLength: Toast.LENGTH_SHORT,
@@ -232,12 +249,35 @@ class _OrderMainPageState extends State<OrderMainPage>
                         alignment: Alignment.center,
                         child: Material(
                           child: InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          OrderTakeawayPage()));
+                            onTap: () async {
+                              try {
+                                if (isInArea) {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              OrderTakeAwayPage(
+                                                  data: widget.data,
+                                                  userData: widget.userData)));
+                                } else {
+                                  Fluttertoast.showToast(
+                                    fontSize: 16,
+                                    msg: 'Anda diluar area restoran!!',
+                                    backgroundColor: Colors.red,
+                                    textColor: Colors.white,
+                                    toastLength: Toast.LENGTH_SHORT,
+                                  );
+                                }
+                              } catch (e) {
+                                Fluttertoast.showToast(
+                                  fontSize: 16,
+                                  msg:
+                                      'Tekan tombol lokasi dipojok kanan atas terlebih dahulu!!',
+                                  backgroundColor: Colors.red,
+                                  textColor: Colors.white,
+                                  toastLength: Toast.LENGTH_SHORT,
+                                );
+                              }
                             },
                             child: Ink(
                               height: 150,
@@ -264,7 +304,10 @@ class _OrderMainPageState extends State<OrderMainPage>
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => BookTablePage()));
+                                      builder: (context) => BookTablePage(
+                                            data: widget.data,
+                                            userData: widget.userData,
+                                          )));
                             },
                             child: Ink(
                               height: 150,

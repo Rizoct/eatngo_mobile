@@ -11,13 +11,17 @@ class RestaurantViewCustomer extends StatefulWidget {
   final String restaurantAddress;
   final double restaurantRating;
   final String restaurantDesc;
+  final Map<String, dynamic> data;
+  final Map<dynamic, dynamic> userData;
   const RestaurantViewCustomer(
       {super.key,
       required this.imgStr,
       required this.restaurantAddress,
       required this.restaurantName,
       required this.restaurantRating,
-      required this.restaurantDesc});
+      required this.restaurantDesc,
+      required this.data,
+      required this.userData});
 
   @override
   State<RestaurantViewCustomer> createState() => _RestaurantViewCustomerState();
@@ -52,13 +56,17 @@ class _RestaurantViewCustomerState extends State<RestaurantViewCustomer> {
         body: TabBarView(
           children: <Widget>[
             InfoTab(
-              imgStr: widget.imgStr,
-              restaurantName: widget.restaurantName,
-              restaurantAddress: widget.restaurantAddress,
-              restaurantRating: widget.restaurantRating,
-              restaurantDesc: widget.restaurantDesc,
+                imgStr: widget.imgStr,
+                restaurantName: widget.restaurantName,
+                restaurantAddress: widget.restaurantAddress,
+                restaurantRating: widget.restaurantRating,
+                restaurantDesc: widget.restaurantDesc,
+                data: widget.data,
+                userData: widget.userData),
+            MenuTab(
+              data: widget.data,
+              restaurantname: widget.restaurantName,
             ),
-            MenuTab(),
             LocationTab(
               restoName: widget.restaurantName,
             ),

@@ -3,17 +3,60 @@
 import 'package:animated_search_bar/animated_search_bar.dart';
 import 'package:eatngo_thesis/components/cards.dart';
 import 'package:eatngo_thesis/dummy_data/static_data.dart';
+import 'package:eatngo_thesis/functions/connection.dart';
 import 'package:eatngo_thesis/screens_restaurant/screens_editmenu/screens_category/screens_menu/menu_add.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class MenuCategoryPage extends StatefulWidget {
-  const MenuCategoryPage({super.key});
+  final Map dataCategory;
+  const MenuCategoryPage({super.key, required this.dataCategory});
 
   @override
   State<MenuCategoryPage> createState() => _MenuCategoryPageState();
 }
 
 class _MenuCategoryPageState extends State<MenuCategoryPage> {
+  List menu = [];
+  @override
+  void initState() {
+    getCategory();
+    // TODO: implement initState
+    super.initState();
+  }
+
+  Future getCategory() async {
+    var response;
+    var uri = Uri.parse('$ip/API_EatNGo/view_category_menu.php');
+    try {
+      response = await http
+          .post(uri, body: {"categoryId": widget.dataCategory['categoryId']});
+      if (response.statusCode == 200) {
+        setState(() {
+          menu = json.decode(response.body);
+          print(menu);
+        });
+      } else {
+        return Fluttertoast.showToast(
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          msg: 'Something went wrong',
+          toastLength: Toast.LENGTH_SHORT,
+        );
+      }
+    } catch (e) {
+      print(e);
+      Fluttertoast.showToast(
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        msg: '$e',
+        toastLength: Toast.LENGTH_SHORT,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,13 +121,16 @@ class _MenuCategoryPageState extends State<MenuCategoryPage> {
       body: ListView.builder(
         shrinkWrap: true,
         physics: ScrollPhysics(),
-        itemCount: menuListWithTitle.length,
+        itemCount: menu.length,
         itemBuilder: (context, index) {
           return EditMenuCard(
-            imgStr: menuListWithTitle[index]['img'],
-            menuDesc: menuListWithTitle[index]['desc'],
-            menuName: menuListWithTitle[index]['title'],
-            menuPrice: menuListWithTitle[index]['price'],
+            itemId: menu[index]['itemId'],
+            dataCategory: widget.dataCategory,
+            imgStr: menu[index]['photo_url'],
+            menuDesc: menu[index]['itemDescription'],
+            menuName: menu[index]['itemName'],
+            menuPrice: int.parse(menu[index]['cost']),
+            stock: int.parse(menu[index]['stock']),
           );
         },
       ),

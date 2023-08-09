@@ -2,9 +2,12 @@
 
 import 'package:eatngo_thesis/components/textboxs.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class DrawerProfilePage extends StatefulWidget {
-  const DrawerProfilePage({super.key});
+  final Map data;
+  const DrawerProfilePage({super.key, required this.data});
 
   @override
   State<DrawerProfilePage> createState() => _DrawerProfilePageState();
@@ -15,14 +18,32 @@ class _DrawerProfilePageState extends State<DrawerProfilePage> {
   TextEditingController phoneController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController locationController = TextEditingController();
+  TextEditingController passController = TextEditingController();
+  TextEditingController repassController = TextEditingController();
+
+  File? imageFile;
+  void _getFromCamera() async {
+    XFile? pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.camera,
+      maxWidth: 1800,
+      maxHeight: 1800,
+      imageQuality: 20,
+    );
+
+    setState(() {
+      imageFile = File(pickedFile!.path);
+    });
+  }
+
   @override
   void initState() {
+    print(widget.data);
     // TODO: implement initState
     super.initState();
-    nameController.text = 'Rizky Octavian Dwipratama';
-    phoneController.text = '081111111111';
-    emailController.text = 'rizky.dwipratama@binus.ac.id';
-    locationController.text = 'Malang';
+    nameController.text = widget.data['name'];
+    phoneController.text = widget.data['contact_number'];
+    emailController.text = widget.data['email'];
+    locationController.text = widget.data['address'];
   }
 
   @override
@@ -62,18 +83,24 @@ class _DrawerProfilePageState extends State<DrawerProfilePage> {
               Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Column(children: [
-                  CircleAvatar(
-                    radius: 50,
-                    backgroundColor: Colors.black,
-                    backgroundImage:
-                        AssetImage('assets/images/default-ava.jpg'),
+                  InkWell(
+                    onTap: () {
+                      _getFromCamera();
+                    },
+                    child: CircleAvatar(
+                        radius: 50,
+                        backgroundColor: Colors.black,
+                        backgroundImage: (imageFile == null)
+                            ? AssetImage('assets/images/default-ava.jpg')
+                                as ImageProvider
+                            : FileImage(imageFile!)),
                   ),
                   SizedBox(
                     height: 10,
                   ),
                   textFieldInput('Name', nameController),
                   textFieldInput('Phone', phoneController),
-                  textFieldInput('Email', emailController),
+                  textFieldInputEmail('Email', emailController),
                   textFieldInput('Location', locationController),
                   Padding(
                     padding: const EdgeInsets.symmetric(
@@ -87,13 +114,42 @@ class _DrawerProfilePageState extends State<DrawerProfilePage> {
                       ),
                     ),
                   ),
-                  textFieldPassword('Enter your old password'),
-                  textFieldPassword('Enter your new password'),
+                  textFieldPassword('Enter your old password', passController),
+                  textFieldPassword(
+                      'Enter your new password', repassController),
                 ]),
               ),
             ],
           )
         ],
+      ),
+    );
+  }
+
+  Padding textFieldInputEmail(String hint, TextEditingController controller) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Material(
+        elevation: 10.0,
+        shadowColor: Colors.black,
+        child: TextFormField(
+          enabled: false,
+          onChanged: (value) {
+            setState(() {
+              //emailLogin = value;
+            });
+          },
+          controller: controller,
+          autofocus: false,
+          decoration: InputDecoration(
+              hintText: hint,
+              fillColor: Colors.grey.shade400,
+              filled: true,
+              contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+              enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  borderSide: BorderSide(color: Colors.white, width: 3.0))),
+        ),
       ),
     );
   }
@@ -125,20 +181,19 @@ class _DrawerProfilePageState extends State<DrawerProfilePage> {
     );
   }
 
-  Padding textFieldPassword(String hint) {
+  Padding textFieldPassword(String hint, TextEditingController ctrl) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Material(
         elevation: 10.0,
         shadowColor: Colors.black,
         child: TextFormField(
-          //controller: passController,
+          controller: ctrl,
           onChanged: (value) {
             setState(() {
               //password = value;
             });
           },
-
           obscureText: true,
           autofocus: false,
           decoration: InputDecoration(

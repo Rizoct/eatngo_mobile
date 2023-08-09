@@ -3,13 +3,17 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:eatngo_thesis/components/texts.dart';
 import 'package:eatngo_thesis/drawers/restaurantDrawer.dart';
+import 'package:eatngo_thesis/functions/connection.dart';
 import 'package:eatngo_thesis/screens_restaurant/screens_booking/booking_main.dart';
 import 'package:eatngo_thesis/screens_restaurant/screens_editmenu/editmenu_category.dart';
 import 'package:eatngo_thesis/screens_restaurant/screens_vieworder/vieworder_main.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:fluttertoast/fluttertoast.dart';
 
 class MainMenuRestaurant extends StatefulWidget {
-  const MainMenuRestaurant({super.key});
+  final Map userData;
+  const MainMenuRestaurant({super.key, required this.userData});
 
   @override
   State<MainMenuRestaurant> createState() => _MainMenuRestaurantState();
@@ -20,14 +24,52 @@ class _MainMenuRestaurantState extends State<MainMenuRestaurant> {
     'Available',
     'Full',
   ];
+
+  @override
+  void initState() {
+    print(widget.userData);
+    // TODO: implement initState
+    super.initState();
+  }
+
+  Future setTableAvailability() async {
+    var response;
+    var uri = Uri.parse('$ip/API_EatNGo/edit_tableavailability.php');
+    try {
+      response = await http.post(uri, body: {
+        'restaurantId': widget.userData['restaurantId'],
+        'tableavailability': selectedValue
+      });
+      print(uri);
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        return Fluttertoast.showToast(
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          msg: 'Berhasil diubah',
+          toastLength: Toast.LENGTH_SHORT,
+        );
+      } else {
+        return Fluttertoast.showToast(
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          msg: response.statusCode,
+          toastLength: Toast.LENGTH_SHORT,
+        );
+      }
+    } catch (e) {}
+  }
+
   String? selectedValue;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mie Gacoan'),
+        title: Text(widget.userData['name']),
       ),
-      drawer: RestaurantDrawer(),
+      drawer: RestaurantDrawer(
+        userData: widget.userData,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
@@ -76,6 +118,7 @@ class _MainMenuRestaurantState extends State<MainMenuRestaurant> {
                     onChanged: (value) {
                       setState(() {
                         selectedValue = value as String;
+                        setTableAvailability();
                       });
                     },
                     buttonStyleData: const ButtonStyleData(
@@ -107,8 +150,9 @@ class _MainMenuRestaurantState extends State<MainMenuRestaurant> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            EditMenuCategoryPage()));
+                        builder: (BuildContext context) => EditMenuCategoryPage(
+                              userData: widget.userData,
+                            )));
               },
             ),
             RestaurantMenuButton(
@@ -117,8 +161,9 @@ class _MainMenuRestaurantState extends State<MainMenuRestaurant> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            ViewOrderMainPage()));
+                        builder: (BuildContext context) => ViewOrderMainPage(
+                              userData: widget.userData,
+                            )));
               },
             ),
             RestaurantMenuButton(

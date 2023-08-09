@@ -101,14 +101,14 @@ class RichTextBoldTailWhite extends StatelessWidget {
         text: nonBold,
         style: TextStyle(color: Colors.white, fontSize: 18),
         children: <TextSpan>[
-          (bold == 'Accepted')
+          (bold == 'accepted')
               ? TextSpan(
                   text: bold,
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
                       color: Color.fromARGB(255, 67, 221, 146)))
-              : (bold == 'Pending')
+              : (bold == 'pending')
                   ? TextSpan(
                       text: bold,
                       style: TextStyle(

@@ -6,6 +6,7 @@ final List<String> imgList = [
   'https://media.suara.com/pictures/653x366/2021/09/01/84086-waroeng-steak-shake.jpg',
   'https://gluttonwanderers.com/wp-content/uploads/2022/04/wp-1651241595022.jpg',
 ];
+
 final List imgListWithTitle = [
   {
     'title': 'Mie Gacoan',

@@ -30,7 +30,7 @@ class _RegisterRestaurantPageState extends State<RegisterRestaurantPage> {
       isLoading = true;
     });
 
-    var uri = Uri.http(ip, '/API_EatNGo/register.php', {'q': '{http}'});
+    var uri = Uri.parse('$ip/API_EatNGo/register.php');
     final response = await http.post(uri, body: {
       'register_type': 'restaurant',
       'name': name.text,

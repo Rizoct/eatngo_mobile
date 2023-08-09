@@ -2,6 +2,7 @@
 
 import 'package:eatngo_thesis/components/buttons.dart';
 import 'package:eatngo_thesis/components/texts.dart';
+import 'package:eatngo_thesis/functions/connection.dart';
 import 'package:eatngo_thesis/screens_customer/tabs_restaurants/screens_order/order_main.dart';
 import 'package:flutter/material.dart';
 
@@ -11,13 +12,17 @@ class InfoTab extends StatefulWidget {
   final String restaurantAddress;
   final String restaurantDesc;
   final double restaurantRating;
+  final Map<String, dynamic> data;
+  final Map<dynamic, dynamic> userData;
   const InfoTab(
       {super.key,
       required this.imgStr,
       required this.restaurantAddress,
       required this.restaurantName,
       required this.restaurantRating,
-      required this.restaurantDesc});
+      required this.restaurantDesc,
+      required this.data,
+      required this.userData});
 
   @override
   State<InfoTab> createState() => _InfoTabState();
@@ -34,12 +39,13 @@ class _InfoTabState extends State<InfoTab> {
               child: OrderButton(
                 ButtonText: 'Order',
                 onPressed: () {
-                  print('pressed');
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => OrderMainPage(
                         restoName: widget.restaurantName,
+                        data: widget.data,
+                        userData: widget.userData,
                       ),
                     ),
                   );
@@ -55,7 +61,9 @@ class _InfoTabState extends State<InfoTab> {
                 height: 200,
                 decoration: BoxDecoration(
                     image: DecorationImage(
-                        image: NetworkImage(widget.imgStr), fit: BoxFit.fill),
+                        image: NetworkImage(
+                            '$ip/img/restaurant/profile_pict/${widget.imgStr}'),
+                        fit: BoxFit.fill),
                     borderRadius: BorderRadius.all(Radius.circular(5))),
               ),
             ),

@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, use_build_context_synchronously
 
 import 'dart:ui';
+import 'package:eatngo_thesis/screens_restaurant/mainmenu_restaurant.dart';
 import 'package:http/http.dart' as http;
 import 'package:eatngo_thesis/functions/connection.dart';
 import 'package:eatngo_thesis/components/texts.dart';
@@ -42,84 +43,93 @@ class _LoginCustomerPageState extends State<LoginCustomerPage> {
 
   void login() async {
     var response;
-    var url = Uri.http(ip, '/API_EatNGo/login.php', {'q': '{http}'});
     try {
+      var url = Uri.parse('$ip/API_EatNGo/login.php');
+      print(url);
       response = await http.post(url, body: {
         "email": emailLogin,
         "password": password,
-        "role": 'customer',
       });
-    } catch (e) {
-      setState(() {
-        isLoading = false;
-      });
-      Fluttertoast.showToast(
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        msg: 'Error!! Check your connection',
-        toastLength: Toast.LENGTH_SHORT,
-      );
-    }
 
-    if (response.statusCode == 200) {
-      var data = json.decode(response.body);
-      if (data["error"]) {
-        setState(() {
-          isLoading = false;
-          error = true;
-          errormsg = data['message'];
-          Fluttertoast.showToast(
-            msg: errormsg!,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            toastLength: Toast.LENGTH_SHORT,
-          );
-        });
-      } else {
-        if (data["success"]) {
+      if (response.statusCode == 200) {
+        var data = json.decode(response.body);
+        if (data["error"]) {
           setState(() {
-            error = false;
             isLoading = false;
+            error = true;
+            errormsg = data['message'];
+            Fluttertoast.showToast(
+              msg: errormsg!,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              toastLength: Toast.LENGTH_SHORT,
+            );
           });
-
-          Fluttertoast.showToast(
-            msg: 'Login Successful',
-            backgroundColor: Colors.green,
-            textColor: Colors.white,
-            toastLength: Toast.LENGTH_SHORT,
-          );
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => MainMenuCustomer(
-                data: data,
-              ),
-            ),
-          );
         } else {
-          isLoading = false;
-          error = true;
-          errormsg = "Something went wrong.";
-          Fluttertoast.showToast(
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            msg: errormsg!,
-            toastLength: Toast.LENGTH_SHORT,
-          );
+          if (data["success"]) {
+            setState(() {
+              error = false;
+              isLoading = false;
+            });
+
+            Fluttertoast.showToast(
+              msg: 'Login Successful',
+              backgroundColor: Colors.green,
+              textColor: Colors.white,
+              toastLength: Toast.LENGTH_SHORT,
+            );
+            if (data['role'] == 'customer') {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MainMenuCustomer(
+                    data: data,
+                  ),
+                ),
+              );
+            } else {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MainMenuRestaurant(
+                    userData: data,
+                  ),
+                ),
+              );
+            }
+          } else {
+            isLoading = false;
+            error = true;
+            errormsg = "Something went wrong.";
+            Fluttertoast.showToast(
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              msg: errormsg!,
+              toastLength: Toast.LENGTH_SHORT,
+            );
+          }
         }
+      } else {
+        Fluttertoast.showToast(
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          msg: response.statusCode.toString(),
+          toastLength: Toast.LENGTH_SHORT,
+        );
       }
-    } else {
+
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('username', emailLogin!);
+      prefs.setString('password', password!);
+    } catch (e) {
+      print(e);
       Fluttertoast.showToast(
         backgroundColor: Colors.red,
         textColor: Colors.white,
-        msg: 'Error while connecting to server',
+        msg: e.toString(),
         toastLength: Toast.LENGTH_SHORT,
       );
     }
-
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('username', emailLogin!);
-    prefs.setString('password', password!);
   }
 
   @override
@@ -178,7 +188,7 @@ class _LoginCustomerPageState extends State<LoginCustomerPage> {
                       height: 30,
                     ),
                     Text(
-                      'Login as Customer',
+                      "Login to EatN'Go",
                       style: TextStyle(
                         fontSize: 20,
                         color: Colors.white,

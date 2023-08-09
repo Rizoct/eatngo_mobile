@@ -1,15 +1,17 @@
 // ignore_for_file: file_names, prefer_const_constructors
+import 'package:eatngo_thesis/functions/connection.dart';
+import 'package:eatngo_thesis/screens_loginregister/login_main.dart';
 import 'package:eatngo_thesis/screens_restaurant/drawersmenu_restaurant/drawer_profile_restaurant.dart';
 import 'package:eatngo_thesis/screens_restaurant/drawersmenu_restaurant/drawer_promo_restaurant.dart';
 import 'package:eatngo_thesis/screens_restaurant/drawersmenu_restaurant/drawer_viewrating.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RestaurantDrawer extends StatelessWidget {
+  final Map userData;
   final padding = EdgeInsets.symmetric(horizontal: 20);
 
-  RestaurantDrawer({
-    Key? key,
-  }) : super(key: key);
+  RestaurantDrawer({Key? key, required this.userData}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +27,9 @@ class RestaurantDrawer extends StatelessWidget {
               ),
               buildHeader(
                 urlImage:
-                    'https://i0.wp.com/kliklegal.com/wp-content/uploads/2022/08/Mie-Gacoan-Tak-Bisa-Kantongi-Label-Halal-Benarkah.jpg',
-                name: 'Mie Gacoan',
-                level: 'Restaurant',
+                    '$ip/img/restaurant/profile_pict/${userData['photo_url']}',
+                name: userData['name'],
+                level: userData['role'],
                 onClicked: () {
                   Navigator.push(
                       context,
@@ -69,7 +71,20 @@ class RestaurantDrawer extends StatelessWidget {
                   child: buildMenuItem(
                       text: 'Logout',
                       icon: Icons.logout,
-                      navigate: () async {}),
+                      navigate: () async {
+                        final SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        await prefs.remove('usernameRestaurant');
+                        await prefs.remove('passwordRestaurant');
+                        await prefs.remove('username');
+                        await prefs.remove('password');
+                        print('tes');
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    LoginMainPage()));
+                      }),
                 ),
               )
             ],

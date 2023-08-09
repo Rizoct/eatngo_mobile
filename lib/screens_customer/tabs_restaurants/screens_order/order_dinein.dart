@@ -3,71 +3,78 @@
 import 'package:eatngo_thesis/components/buttons.dart';
 import 'package:eatngo_thesis/components/cards.dart';
 import 'package:eatngo_thesis/components/texts.dart';
+import 'package:eatngo_thesis/functions/connection.dart';
 import 'package:eatngo_thesis/screens_customer/tabs_restaurants/screens_order/screens_checkout/checkout_dinein.dart';
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
+import 'package:money_formatter/money_formatter.dart';
+import 'package:http/http.dart' as http;
+import 'package:fluttertoast/fluttertoast.dart';
+import 'dart:convert';
 
 class OrderDineInPage extends StatefulWidget {
-  const OrderDineInPage({super.key});
+  final Map<String, dynamic> data;
+  final Map<dynamic, dynamic> userData;
+  const OrderDineInPage(
+      {super.key, required this.data, required this.userData});
 
   @override
   State<OrderDineInPage> createState() => _OrderDineInPageState();
 }
 
 class _OrderDineInPageState extends State<OrderDineInPage> {
-  final List _elements = [
-    {
-      'name': 'Mie Setan',
-      'img':
-          'https://i0.wp.com/resepkoki.id/wp-content/uploads/2020/03/Resep-Mie-Setan.jpg?fit=1079%2C1214&ssl=1',
-      'group': 'Makanan',
-      'desc': 'Classic Noodle',
-      'orderQuantity': 0,
-      'price': 12000,
-      'isZero': true,
-      'isAvailable': true,
-    },
-    {
-      'name': 'Mie Coklat',
-      'img':
-          'https://static.wikia.nocookie.net/mrfz/images/d/d5/Wrath_of_Siracusans.png',
-      'group': 'Makanan',
-      'desc': 'Wrath of Siracusans',
-      'orderQuantity': 0,
-      'price': 12000,
-      'isZero': true,
-      'isAvailable': true,
-    },
-    {
-      'name': 'Mie Iblis',
-      'img':
-          'https://sweetrip.id/wp-content/uploads/2022/05/anakjajanmadiun_101069686_108229544138194_4439188319363853729_n.jpg',
-      'group': 'Makanan',
-      'desc': 'Sweet Noodle',
-      'orderQuantity': 0,
-      'price': 12000,
-      'isZero': true,
-      'isAvailable': false,
-    },
-    {
-      'name': 'Es Teh',
-      'img':
-          'https://bebekbkb.com/wp-content/uploads/2020/02/es-teh-manis-1.jpg',
-      'group': 'Minuman',
-      'desc': 'Pelepas Dahaga',
-      'orderQuantity': 0,
-      'price': 2000,
-      'isZero': true,
-      'isAvailable': true,
-    },
-  ];
-
   List orderList = [];
   bool isOrder = false;
   int counter = 0;
+
+  addQuantityData() {
+    for (int i = 0; i < dataMenu.length; i++) {
+      setState(() {
+        dataMenu[i]["orderQuantity"] = 0;
+      });
+    }
+  }
+
+  @override
   void initState() {
+    getMenu();
     super.initState();
     isOrder = false;
+  }
+
+  List dataMenu = [];
+  Future getMenu() async {
+    var response;
+    var url = Uri.parse('$ip/API_EatNGo/view_menu.php');
+    try {
+      response = await http.post(url, body: {
+        "restaurant_id": widget.data['restaurantId'],
+      });
+      if (response.statusCode == 200) {
+        setState(() {
+          dataMenu = json.decode(response.body);
+          addQuantityData();
+          print(dataMenu);
+        });
+      } else {
+        return Fluttertoast.showToast(
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          msg: 'Something went wrong',
+          toastLength: Toast.LENGTH_SHORT,
+        );
+      }
+    } catch (e) {
+      setState(() {
+        //isLoading = false;
+      });
+      Fluttertoast.showToast(
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        msg: 'Error!! Check your connection',
+        toastLength: Toast.LENGTH_SHORT,
+      );
+    }
   }
 
   @override
@@ -88,17 +95,16 @@ class _OrderDineInPageState extends State<OrderDineInPage> {
                     if (orderList.isNotEmpty) {
                       orderList.clear();
                     }
-                    for (int a = 0; a < _elements.length; a++) {
-                      if (_elements[a]['orderQuantity'] != 0) {
-                        orderList.add(_elements[a]);
+                    for (int a = 0; a < dataMenu.length; a++) {
+                      if (dataMenu[a]['orderQuantity'] != 0) {
+                        orderList.add(dataMenu[a]);
                       }
                     }
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => CheckOutDineInPage(
-                          checkOutData: orderList,
-                        ),
+                            checkOutData: orderList, userData: widget.userData),
                       ),
                     );
                   },
@@ -106,13 +112,13 @@ class _OrderDineInPageState extends State<OrderDineInPage> {
               ))
           : null,
       body: GroupedListView<dynamic, String>(
-        elements: _elements,
-        groupBy: (element) => element['group'],
+        elements: dataMenu,
+        groupBy: (element) => element['categoryName'],
         groupComparator: (value1, value2) => value2.compareTo(value1),
         itemComparator: (item1, item2) =>
-            item1['name'].compareTo(item2['name']),
-        order: GroupedListOrder.DESC,
-        useStickyGroupSeparators: false,
+            item1['itemName'].compareTo(item2['itemName']),
+        order: GroupedListOrder.ASC,
+        useStickyGroupSeparators: true,
         groupSeparatorBuilder: (String value) => Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
@@ -127,17 +133,27 @@ class _OrderDineInPageState extends State<OrderDineInPage> {
               margin:
                   const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
               child: MenuCardwithAdd(
-                  menuName: element['name'],
-                  menuDesc: element['desc'],
-                  imgStr: element['img'],
-                  menuPrice: element['price'],
+                  menuName: element['itemName'],
+                  imgStr: element['photo_url'],
+                  menuPrice: int.parse(element['cost']),
                   orderQuantity: element['orderQuantity'],
-                  isAvailable: element['isAvailable'],
+                  stock: int.parse(element['stock']),
                   onPressedAdd: () {
                     setState(() {
-                      isOrder = true;
-                      element['orderQuantity']++;
-                      counter++;
+                      if (element['orderQuantity'] <
+                          int.parse(element['stock'])) {
+                        isOrder = true;
+                        element['orderQuantity']++;
+                        counter++;
+                      } else if (element['orderQuantity'] ==
+                          int.parse(element['stock'])) {
+                        Fluttertoast.showToast(
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          msg: 'Jumlah makanan melebihi stok!!',
+                          toastLength: Toast.LENGTH_SHORT,
+                        );
+                      }
                     });
                   },
                   onPressedReduce: () {
@@ -159,26 +175,25 @@ class _OrderDineInPageState extends State<OrderDineInPage> {
 class MenuCardwithAdd extends StatelessWidget {
   final String imgStr;
   final String menuName;
-  final String menuDesc;
   final int menuPrice;
   final VoidCallback onPressedAdd;
   final VoidCallback onPressedReduce;
   final int orderQuantity;
-  final bool isAvailable;
+  final int stock;
   const MenuCardwithAdd(
       {super.key,
       required this.imgStr,
       required this.menuName,
-      required this.menuDesc,
       required this.menuPrice,
       required this.onPressedAdd,
       required this.onPressedReduce,
       required this.orderQuantity,
-      required this.isAvailable});
+      required this.stock});
 
   @override
   Widget build(BuildContext context) {
     int count = orderQuantity;
+    MoneyFormatter fmf = MoneyFormatter(amount: menuPrice.toDouble());
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -195,7 +210,9 @@ class MenuCardwithAdd extends StatelessWidget {
                   Container(
                     decoration: BoxDecoration(
                         image: DecorationImage(
-                            image: NetworkImage(imgStr), fit: BoxFit.fill),
+                            image: NetworkImage(
+                                '$ip/img/restaurant/menu_pict/$imgStr'),
+                            fit: BoxFit.fill),
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10.0)),
                     width: 120,
@@ -207,17 +224,19 @@ class MenuCardwithAdd extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ContentSubtitle(
-                          title: menuName,
-                        ),
                         Flexible(
-                            child: Container(
-                                child: ContentSubtitle(title: menuDesc))),
+                          child: SizedBox(
+                            width: 100,
+                            child: ContentTitle(
+                              title: menuName,
+                            ),
+                          ),
+                        ),
                         SizedBox(
                           width: 10,
                         ),
                         ContentSubtitle(
-                          title: 'Rp. $menuPrice',
+                          title: 'Rp. ${fmf.output.nonSymbol.toString()}',
                         ),
                       ],
                     ),
@@ -238,7 +257,7 @@ class MenuCardwithAdd extends StatelessWidget {
                 ],
               ),
             ]),
-            (!isAvailable)
+            (stock == 0)
                 ? Container(
                     width: double.infinity,
                     height: double.infinity,

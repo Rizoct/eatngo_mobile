@@ -1,10 +1,12 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:eatngo_thesis/functions/connection.dart';
 import 'package:eatngo_thesis/screens_restaurant/screens_editmenu/screens_category/screens_menu/menu_add.dart';
 import 'package:eatngo_thesis/screens_restaurant/screens_editmenu/screens_category/screens_menu/menu_edit.dart';
 import 'package:flutter/material.dart';
 import 'texts.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:money_formatter/money_formatter.dart';
 
 class RestaurantMainCard extends StatelessWidget {
   final String imgStr;
@@ -36,7 +38,9 @@ class RestaurantMainCard extends StatelessWidget {
             Container(
               decoration: BoxDecoration(
                   image: DecorationImage(
-                      image: NetworkImage(imgStr), fit: BoxFit.fill),
+                      image: NetworkImage(
+                          '$ip/img/restaurant/profile_pict/$imgStr'),
+                      fit: BoxFit.fill),
                   borderRadius: BorderRadius.circular(10.0)),
               width: 120,
               height: MediaQuery.of(context).size.height,
@@ -52,11 +56,12 @@ class RestaurantMainCard extends StatelessWidget {
                   ),
                   Flexible(
                       child: SizedBox(
-                          width: 200,
+                          width: 250,
                           child: ContentSubtitle(title: restaurantAddress))),
                   Row(
                     children: [
                       RatingBar.builder(
+                        ignoreGestures: true,
                         itemSize: 25,
                         initialRating: restaurantRating,
                         minRating: 1,
@@ -68,9 +73,7 @@ class RestaurantMainCard extends StatelessWidget {
                           Icons.star,
                           color: Colors.amber,
                         ),
-                        onRatingUpdate: (rating) {
-                          print(rating);
-                        },
+                        onRatingUpdate: (rating) {},
                       ),
                       SizedBox(
                         width: 10,
@@ -106,6 +109,7 @@ class MenuCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    MoneyFormatter fmf = MoneyFormatter(amount: menuPrice.toDouble());
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -121,7 +125,9 @@ class MenuCard extends StatelessWidget {
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.0),
                     image: DecorationImage(
-                        image: NetworkImage(imgStr), fit: BoxFit.fill)),
+                        image: NetworkImage(
+                            '$ip/img/restaurant/menu_pict/$imgStr'),
+                        fit: BoxFit.fill)),
                 width: 120,
                 height: MediaQuery.of(context).size.height,
               ),
@@ -131,15 +137,18 @@ class MenuCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ContentSubtitle(
+                    ContentTitle(
                       title: '$menuName',
                     ),
-                    ContentSubtitle(title: menuDesc),
+                    Flexible(
+                        child: SizedBox(
+                            width: 250,
+                            child: ContentSubtitle(title: menuDesc))),
                     SizedBox(
                       width: 10,
                     ),
                     ContentSubtitle(
-                      title: 'Rp. $menuPrice',
+                      title: 'Rp. ${fmf.output.nonSymbol.toString()}',
                     ),
                   ],
                 ),
@@ -158,7 +167,7 @@ class MenuCardCheckout extends StatelessWidget {
   final String menuDesc;
   final int menuPrice;
 
-  const MenuCardCheckout({
+  MenuCardCheckout({
     super.key,
     required this.imgStr,
     required this.menuName,
@@ -168,6 +177,7 @@ class MenuCardCheckout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    MoneyFormatter fmf = MoneyFormatter(amount: menuPrice.toDouble());
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -197,7 +207,7 @@ class MenuCardCheckout extends StatelessWidget {
                   width: 10,
                 ),
                 ContentSubtitle(
-                  title: 'Rp. $menuPrice',
+                  title: 'Rp. ${fmf.output.nonSymbol.toString()}',
                 ),
               ],
             ),
@@ -250,7 +260,9 @@ class VoucherCard extends StatelessWidget {
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10.0),
                 image: DecorationImage(
-                    image: NetworkImage(imgStr), fit: BoxFit.fill)),
+                    image:
+                        NetworkImage('$ip/img/restaurant/profile_pict/$imgStr'),
+                    fit: BoxFit.fill)),
             width: 120,
             height: MediaQuery.of(context).size.height,
           ),
@@ -268,7 +280,7 @@ class VoucherCard extends StatelessWidget {
                   width: 10,
                 ),
                 ContentSubtitle(
-                  title: 'Tanggal berakhir: $dateEnd',
+                  title: '$dateStart s/d $dateEnd',
                 ),
               ],
             ),
@@ -375,7 +387,9 @@ class HistoryCard extends StatelessWidget {
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10.0),
                 image: DecorationImage(
-                    image: NetworkImage(imgStr), fit: BoxFit.fill)),
+                    image:
+                        NetworkImage('$ip/img/restaurant/profile_pict/$imgStr'),
+                    fit: BoxFit.fill)),
             width: 120,
             height: MediaQuery.of(context).size.height,
           ),
@@ -422,17 +436,22 @@ class HistoryCard extends StatelessWidget {
 }
 
 class EditMenuCard extends StatelessWidget {
+  final String itemId;
   final String imgStr;
   final String menuName;
   final String menuDesc;
   final int menuPrice;
-  const EditMenuCard({
-    super.key,
-    required this.imgStr,
-    required this.menuName,
-    required this.menuDesc,
-    required this.menuPrice,
-  });
+  final int stock;
+  final Map dataCategory;
+  const EditMenuCard(
+      {super.key,
+      required this.itemId,
+      required this.imgStr,
+      required this.menuName,
+      required this.menuDesc,
+      required this.menuPrice,
+      required this.stock,
+      required this.dataCategory});
 
   @override
   Widget build(BuildContext context) {
@@ -451,7 +470,9 @@ class EditMenuCard extends StatelessWidget {
               Container(
                 decoration: BoxDecoration(
                     image: DecorationImage(
-                        image: NetworkImage(imgStr), fit: BoxFit.fill),
+                        image: NetworkImage(
+                            '$ip/img/restaurant/menu_pict/$imgStr'),
+                        fit: BoxFit.fill),
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10.0)),
                 width: 120,
@@ -463,12 +484,23 @@ class EditMenuCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ContentSubtitle(
-                      title: menuName,
+                    Flexible(
+                      child: SizedBox(
+                        width: 150,
+                        child: ContentTitle(
+                          title: menuName,
+                        ),
+                      ),
                     ),
-                    Text(
-                      '$menuDesc',
-                      style: TextStyle(fontSize: 14),
+                    Flexible(
+                      child: SizedBox(
+                        width: 150,
+                        child: Text(
+                          overflow: TextOverflow.ellipsis,
+                          'Stock $stock',
+                          style: TextStyle(fontSize: 14),
+                        ),
+                      ),
                     ),
                     Text(
                       'Rp $menuPrice',
@@ -488,7 +520,14 @@ class EditMenuCard extends StatelessWidget {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (BuildContext context) => MenuEditPage()));
+                            builder: (BuildContext context) => MenuEditPage(
+                                itemId: itemId,
+                                dataCategory: dataCategory,
+                                imgStr: imgStr,
+                                menuDesc: menuDesc,
+                                menuName: menuName,
+                                menuPrice: menuPrice,
+                                stock: stock)));
                   },
                   child: Text(
                     'Edit',

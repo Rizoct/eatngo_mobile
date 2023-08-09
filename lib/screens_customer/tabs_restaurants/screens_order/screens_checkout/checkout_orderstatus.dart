@@ -1,11 +1,17 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
+import 'dart:convert';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:eatngo_thesis/components/cards.dart';
 import 'package:eatngo_thesis/components/texts.dart';
 import 'package:eatngo_thesis/functions/calculations.dart';
+import 'package:eatngo_thesis/functions/connection.dart';
 import 'package:eatngo_thesis/screens_customer/tabs_restaurants/screens_order/order_dinein.dart';
 import 'package:flutter/material.dart';
 import 'package:money_formatter/money_formatter.dart';
+import 'package:intl/intl.dart' show toBeginningOfSentenceCase;
 
 DateTime now = DateTime.now();
 DateTime date = DateTime(now.year, now.month, now.day);
@@ -13,17 +19,34 @@ DateTime date = DateTime(now.year, now.month, now.day);
 class OrderStatusPage extends StatefulWidget {
   final bool isFromOrder;
   final List checkOutData;
+  final int totalCost;
+  final Map<dynamic, dynamic> userData;
   const OrderStatusPage(
-      {super.key, required this.isFromOrder, required this.checkOutData});
+      {super.key,
+      required this.isFromOrder,
+      required this.checkOutData,
+      required this.totalCost,
+      required this.userData});
 
   @override
   State<OrderStatusPage> createState() => _OrderStatusPageState();
 }
 
 class _OrderStatusPageState extends State<OrderStatusPage> {
-  int totalCost = 0;
   MoneyFormatter fmfTotal = MoneyFormatter(amount: 0);
-
+  List userData = [];
+  List transactionData = [
+    {
+      "transactionId": "",
+      "queueNumber": "",
+      "customerId": "",
+      "restaurantId": "",
+      "order_date": "",
+      "order_type": "",
+      "total_cost": "",
+      "status": ""
+    }
+  ];
   Future<bool> _willPopCallback() async {
     int count = 0;
     if (widget.isFromOrder) {
@@ -39,9 +62,111 @@ class _OrderStatusPageState extends State<OrderStatusPage> {
   @override
   void initState() {
     // TODO: implement initState
+    print(jsonEncode(widget.checkOutData));
+    print(widget.userData);
+    if (widget.isFromOrder) {
+      addTransaction();
+    }
+
     super.initState();
-    totalCost = sum(widget.checkOutData);
-    fmfTotal = MoneyFormatter(amount: totalCost.toDouble());
+    fmfTotal = MoneyFormatter(amount: widget.totalCost.toDouble());
+  }
+
+  Future getTransaction() async {
+    var response;
+    var uri = Uri.parse('$ip/API_EatNGo/view_transaction.php');
+    try {
+      response = await http.post(uri, body: {
+        'customerId': widget.userData['customerId'],
+        'restaurantId': widget.checkOutData[0]['restaurantId'],
+        'status': 'pending',
+      });
+      if (response.statusCode == 200) {
+        setState(() {
+          transactionData = json.decode(response.body);
+        });
+      } else {
+        return Fluttertoast.showToast(
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          msg: 'Something went wrong',
+          toastLength: Toast.LENGTH_SHORT,
+        );
+      }
+    } catch (e) {
+      return Fluttertoast.showToast(
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        msg: 'Something went wrong',
+        toastLength: Toast.LENGTH_SHORT,
+      );
+    }
+  }
+
+  Future addTransaction() async {
+    var response;
+    var uri = Uri.parse('$ip/API_EatNGo/add_transaction.php');
+    try {
+      response = await http.post(uri, body: {
+        'customerId': widget.userData['customerId'],
+        'restaurantId': widget.checkOutData[0]['restaurantId'],
+        'orderType': 'dine in',
+        'totalCost': widget.totalCost.toString(),
+      });
+      Fluttertoast.showToast(
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        msg: 'Success add transactions',
+        toastLength: Toast.LENGTH_SHORT,
+      );
+      addOrder();
+      getTransaction();
+    } catch (e) {
+      Fluttertoast.showToast(
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        msg: e.toString(),
+        toastLength: Toast.LENGTH_SHORT,
+      );
+    }
+  }
+
+  Future addOrder() async {
+    var response;
+    var uri = Uri.parse('$ip/API_EatNGo/add_order.php');
+    try {
+      response = await http.post(uri,
+          headers: {"Content-Type": "application/json"},
+          body: jsonEncode(widget.checkOutData));
+      print(jsonEncode(widget.checkOutData));
+      if (response.statusCode == 200) {
+        Fluttertoast.showToast(
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          msg: 'Success',
+          toastLength: Toast.LENGTH_SHORT,
+        );
+      } else {
+        Fluttertoast.showToast(
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          msg: 'Error ${response.statusCode}',
+          toastLength: Toast.LENGTH_SHORT,
+        );
+        print(response.statusCode);
+      }
+    } catch (e) {
+      setState(() {
+        //isLoading = false;
+      });
+      Fluttertoast.showToast(
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        msg: e.toString(),
+        toastLength: Toast.LENGTH_SHORT,
+      );
+      print(e.toString());
+    }
   }
 
   @override
@@ -49,7 +174,9 @@ class _OrderStatusPageState extends State<OrderStatusPage> {
     return WillPopScope(
       onWillPop: _willPopCallback,
       child: Scaffold(
-        appBar: AppBar(title: Text('Order Status')),
+        appBar: AppBar(
+          title: Text('Order Status'),
+        ),
         body: SizedBox(
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
@@ -72,25 +199,25 @@ class _OrderStatusPageState extends State<OrderStatusPage> {
                         Padding(
                             padding: const EdgeInsets.symmetric(vertical: 5),
                             child: RichTextBoldTail(
-                              bold: 'TR001',
+                              bold: transactionData[0]['transactionId'],
                               nonBold: '',
                             )),
                         Padding(
                             padding: const EdgeInsets.symmetric(vertical: 5),
                             child: RichTextBoldTail(
-                              bold: 'Pending',
+                              bold: transactionData[0]['status'],
                               nonBold: 'Status = ',
                             )),
                         Padding(
                             padding: const EdgeInsets.symmetric(vertical: 5),
                             child: RichTextBoldTail(
-                              bold: date.toString(),
+                              bold: transactionData[0]['order_date'].toString(),
                               nonBold: 'Date = ',
                             )),
                         Padding(
                             padding: const EdgeInsets.symmetric(vertical: 5),
                             child: RichTextBoldTail(
-                              bold: '3314',
+                              bold: transactionData[0]['queueNumber'],
                               nonBold: 'Queue Number = ',
                             )),
                       ],
@@ -116,10 +243,12 @@ class _OrderStatusPageState extends State<OrderStatusPage> {
                           itemCount: widget.checkOutData.length,
                           itemBuilder: (BuildContext context, int index) {
                             return OrderStatusMenu(
-                              menuName: widget.checkOutData[index]['name'],
-                              price: widget.checkOutData[index]['price'],
+                              menuName: widget.checkOutData[index]['itemName'],
+                              price:
+                                  int.parse(widget.checkOutData[index]['cost']),
                               orderQuantity: widget.checkOutData[index]
                                   ['orderQuantity'],
+                              notes: widget.checkOutData[index]['notes'],
                             );
 
                             /*MenuCardCheckout(
@@ -170,11 +299,13 @@ class OrderStatusMenu extends StatelessWidget {
       {super.key,
       required this.menuName,
       required this.price,
-      required this.orderQuantity});
+      required this.orderQuantity,
+      required this.notes});
 
   final String menuName;
   final int price;
   final int orderQuantity;
+  final String notes;
 
   @override
   Widget build(BuildContext context) {
@@ -186,12 +317,45 @@ class OrderStatusMenu extends StatelessWidget {
     MoneyFormatter fmfTotal =
         MoneyFormatter(amount: formattedTotalCost.toDouble());
 
-    return ListTile(
-      title: Text(menuName),
-      trailing: Text(
-          'Rp.${fmfSingle.output.withoutFractionDigits} (Rp.${fmfTotal.output.withoutFractionDigits})',
-          style: TextStyle(fontWeight: FontWeight.bold)),
-      subtitle: Text('${orderQuantity}x'),
+    return Column(
+      children: [
+        ListTile(
+          title: Text(menuName),
+          trailing: Text(
+              'Rp.${fmfSingle.output.withoutFractionDigits} (Rp.${fmfTotal.output.withoutFractionDigits})',
+              style: TextStyle(fontWeight: FontWeight.bold)),
+          subtitle: Text('${orderQuantity}x'),
+        ),
+        (notes != '')
+            ? Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.report,
+                      color: Colors.black,
+                      size: 25,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Flexible(
+                      child: SizedBox(
+                        width: 150,
+                        child: Text(
+                          notes,
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              )
+            : Container(),
+        Divider(
+          thickness: 2,
+        )
+      ],
     );
   }
 }

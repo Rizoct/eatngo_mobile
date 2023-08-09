@@ -30,7 +30,7 @@ class _RegisterCustomerpageState extends State<RegisterCustomerpage> {
       isLoading = true;
     });
 
-    var uri = Uri.http(ip, '/API_EatNGo/register.php', {'q': '{http}'});
+    var uri = Uri.parse('$ip/API_EatNGo/register.php');
     final response = await http.post(uri, body: {
       'register_type': 'customer',
       'name': name.text,

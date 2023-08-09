@@ -1,25 +1,96 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:eatngo_thesis/dummy_data/static_data.dart';
+import 'package:eatngo_thesis/functions/connection.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class MenuEditPage extends StatefulWidget {
-  const MenuEditPage({super.key});
+  final String itemId;
+  final String imgStr;
+  final String menuName;
+  final String menuDesc;
+  final int menuPrice;
+  final int stock;
+  final Map dataCategory;
+  const MenuEditPage(
+      {super.key,
+      required this.itemId,
+      required this.imgStr,
+      required this.menuName,
+      required this.menuDesc,
+      required this.menuPrice,
+      required this.stock,
+      required this.dataCategory});
 
   @override
   State<MenuEditPage> createState() => _MenuEditPageState();
 }
 
 class _MenuEditPageState extends State<MenuEditPage> {
-  final List<String> items = [
+  String itemId = '';
+  String imgStr = '';
+  String menuName = '';
+  String menuDesc = '';
+  int menuPrice = 0;
+  int stock = 0;
+
+  List<String> items = [
     'Available',
     'Sold out',
   ];
+  @override
+  void initState() {
+    print(widget.dataCategory);
+    itemId = widget.itemId;
+    imgStr = widget.imgStr;
+    menuName = widget.menuName;
+    menuDesc = widget.menuDesc;
+    menuPrice = widget.menuPrice;
+    stock = widget.stock;
+    super.initState();
+  }
+
+  Future updateMenu() async {
+    var response;
+    var url = Uri.http(ip, '/API_EatNGo/edit_menu.php', {'q': '{http}'});
+    try {
+      response = await http.post(url, body: {
+        'itemId': itemId,
+        'name': menuName,
+        'desc': menuDesc,
+        'price': menuPrice.toString(),
+        'stock': stock.toString(),
+      });
+
+      if (response.statusCode == 200) {
+        return Fluttertoast.showToast(
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          msg: 'Success',
+          toastLength: Toast.LENGTH_SHORT,
+        );
+      } else {
+        return Fluttertoast.showToast(
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          msg: 'Something went wrong',
+          toastLength: Toast.LENGTH_SHORT,
+        );
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   String? selectedValue;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(title: Text('Edit Menu')),
       bottomNavigationBar: Padding(
         padding: EdgeInsets.all(12),
@@ -32,7 +103,9 @@ class _MenuEditPageState extends State<MenuEditPage> {
                     RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(18.0),
             ))),
-            onPressed: () {},
+            onPressed: () {
+              updateMenu();
+            },
             child: Text('Save'),
           ),
         ),
@@ -53,7 +126,7 @@ class _MenuEditPageState extends State<MenuEditPage> {
                         border: Border.all(color: Colors.black, width: 1.5)),
                     child: Center(
                       child: Text(
-                        'Current Category = Makanan',
+                        'Current Category = ${widget.dataCategory['categoryName']}',
                         style: TextStyle(color: Colors.white, fontSize: 16),
                       ),
                     )),
@@ -73,7 +146,7 @@ class _MenuEditPageState extends State<MenuEditPage> {
                   decoration: BoxDecoration(
                       image: DecorationImage(
                           image: NetworkImage(
-                              'https://i0.wp.com/resepkoki.id/wp-content/uploads/2020/03/Resep-Mie-Setan.jpg?fit=1079%2C1214&ssl=1'),
+                              'http://$ip/API_EatNGo/restaurant/menu_pict/${widget.imgStr}'),
                           fit: BoxFit.fill)),
                 ),
                 Divider(
@@ -84,7 +157,12 @@ class _MenuEditPageState extends State<MenuEditPage> {
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
                 TextFormField(
-                  initialValue: 'Mie Setan',
+                  onChanged: (value) {
+                    setState(() {
+                      menuName = value;
+                    });
+                  },
+                  initialValue: widget.menuName,
                   decoration: InputDecoration(hintText: 'ex: Nasi Goreng'),
                 ),
                 SizedBox(
@@ -95,7 +173,14 @@ class _MenuEditPageState extends State<MenuEditPage> {
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
                 TextFormField(
-                  initialValue: 'Original Spicy Noodle',
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
+                  onChanged: (value) {
+                    setState(() {
+                      menuDesc = value;
+                    });
+                  },
+                  initialValue: widget.menuDesc,
                   decoration:
                       InputDecoration(hintText: 'ex: Nasi Goreng tradisional'),
                 ),
@@ -107,7 +192,13 @@ class _MenuEditPageState extends State<MenuEditPage> {
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
                 TextFormField(
-                  initialValue: '12000',
+                  onChanged: (value) {
+                    setState(() {
+                      menuPrice = int.parse(value);
+                    });
+                  },
+                  keyboardType: TextInputType.number,
+                  initialValue: widget.menuPrice.toString(),
                   decoration: InputDecoration(hintText: 'ex: 10000'),
                 ),
                 SizedBox(
@@ -117,58 +208,15 @@ class _MenuEditPageState extends State<MenuEditPage> {
                   'Stock',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
-                SizedBox(
-                  height: 10,
-                ),
-                Center(
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton2(
-                        hint: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Text(
-                            'Select Item',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Theme.of(context).hintColor,
-                            ),
-                          ),
-                        ),
-                        items: items
-                            .map((item) => DropdownMenuItem<String>(
-                                  value: item,
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 16.0),
-                                    child: Text(
-                                      item,
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                      ),
-                                    ),
-                                  ),
-                                ))
-                            .toList(),
-                        value: selectedValue,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedValue = value as String;
-                          });
-                        },
-                        buttonStyleData: const ButtonStyleData(
-                            height: 40,
-                            width: 140,
-                            decoration: BoxDecoration(
-                                color: Color.fromARGB(255, 216, 216, 216),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(30)))),
-                        menuItemStyleData: const MenuItemStyleData(
-                          height: 40,
-                        ),
-                      ),
-                    ),
-                  ),
+                TextFormField(
+                  onChanged: (value) {
+                    setState(() {
+                      stock = int.parse(value);
+                    });
+                  },
+                  keyboardType: TextInputType.number,
+                  initialValue: widget.stock.toString(),
+                  decoration: InputDecoration(hintText: 'ex: 10000'),
                 ),
               ],
             ),

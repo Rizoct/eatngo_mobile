@@ -1,1 +1,1 @@
-String ip = '192.168.0.112';
+String ip = 'https://eatngo-guest.000webhostapp.com';

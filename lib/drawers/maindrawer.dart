@@ -1,6 +1,7 @@
 // ignore_for_file: file_names, prefer_const_constructors
 import 'package:eatngo_thesis/functions/connection.dart';
 import 'package:eatngo_thesis/screens_customer/drawersmenu_customer/drawer_history.dart';
+import 'package:eatngo_thesis/screens_customer/drawersmenu_customer/drawer_myorder.dart';
 import 'package:eatngo_thesis/screens_customer/drawersmenu_customer/drawer_profile.dart';
 import 'package:eatngo_thesis/screens_customer/drawersmenu_customer/drawer_promo.dart';
 import 'package:eatngo_thesis/screens_customer/drawersmenu_customer/drawer_queue.dart';
@@ -27,15 +28,16 @@ class MainDrawer extends StatelessWidget {
                 height: 40,
               ),
               buildHeader(
-                urlImage: '$ip/API_EatNGo/customer/default-ava.jpg',
+                urlImage: '$ip/img/customer/default-ava.jpg',
                 name: data["name"],
                 level: data["role"],
                 onClicked: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              DrawerProfilePage()));
+                          builder: (BuildContext context) => DrawerProfilePage(
+                                data: data,
+                              )));
                 },
               ),
               const SizedBox(
@@ -53,7 +55,9 @@ class MainDrawer extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (BuildContext context) =>
-                                DrawerHistoryPage()));
+                                DrawerHistoryPage(
+                                  userData: data,
+                                )));
                   }),
               buildMenuItem(
                   text: 'Promo & Voucher',
@@ -66,7 +70,17 @@ class MainDrawer extends StatelessWidget {
                                 DrawerPromoPage()));
                   }),
               buildMenuItem(
-                  text: 'My Order', icon: Icons.shopping_bag, navigate: () {}),
+                  text: 'My Order',
+                  icon: Icons.shopping_bag,
+                  navigate: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                DrawerMyOrderPage(
+                                  userData: data,
+                                )));
+                  }),
               buildMenuItem(
                   text: 'Queue Number',
                   icon: Icons.numbers,
@@ -74,8 +88,9 @@ class MainDrawer extends StatelessWidget {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                DrawerQueuePage()));
+                            builder: (BuildContext context) => DrawerQueuePage(
+                                  userData: data,
+                                )));
                   }),
               Expanded(
                 child: Align(

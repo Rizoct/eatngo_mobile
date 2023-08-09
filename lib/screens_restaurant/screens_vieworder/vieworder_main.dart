@@ -6,7 +6,8 @@ import 'package:eatngo_thesis/screens_restaurant/screens_vieworder/tabs_vieworde
 import 'package:flutter/material.dart';
 
 class ViewOrderMainPage extends StatefulWidget {
-  const ViewOrderMainPage({super.key});
+  final Map userData;
+  const ViewOrderMainPage({super.key, required this.userData});
 
   @override
   State<ViewOrderMainPage> createState() => _ViewOrderMainPageState();
@@ -37,7 +38,7 @@ class _ViewOrderMainPageState extends State<ViewOrderMainPage> {
         ),
         body: TabBarView(
           children: <Widget>[
-            TabOrderList(),
+            TabOrderList(userData: widget.userData),
             TabOrderDone(),
             TabOrderCancelled()
           ],

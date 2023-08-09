@@ -21,18 +21,6 @@ class LoginMainPage extends StatefulWidget {
 }
 
 class _LoginMainPageState extends State<LoginMainPage> {
-  final List jsontes = [
-    {'id': 1, 'quantity': 2},
-    {'id': 2, 'quantity': 6}
-  ];
-  Future jsontest() async {
-    var uri = Uri.http(ip, '/API_EatNGo/customer_order.php', {'q': '{http}'});
-    final response = await http.post(uri, body: {
-      'data': jsonEncode(jsontes),
-    });
-    print(response.statusCode);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,29 +28,7 @@ class _LoginMainPageState extends State<LoginMainPage> {
       bottomNavigationBar: BottomAppBar(
         color: Colors.transparent,
         elevation: 0,
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Padding(
-              padding: EdgeInsets.all(15.0),
-              child: RichText(
-                text: TextSpan(
-                  text: "Don't have an Account?",
-                  style: TextStyle(fontSize: 18, color: Colors.black),
-                  children: <TextSpan>[
-                    TextSpan(
-                      style: TextStyle(color: Colors.indigo),
-                      text: ' Click Here!',
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () => Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => RegisterMainPage(),
-                              ),
-                            ),
-                    ),
-                  ],
-                ),
-              )),
-        ]),
+        child: Column(mainAxisSize: MainAxisSize.min, children: []),
       ),
       body: Stack(
         children: [
@@ -107,9 +73,13 @@ class _LoginMainPageState extends State<LoginMainPage> {
                     ),
                   ),
                 ),
+                SizedBox(
+                  height: 30,
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 20.0, vertical: 30.0),
+                    horizontal: 20.0,
+                  ),
                   child: Column(
                     children: [
                       Padding(
@@ -125,10 +95,17 @@ class _LoginMainPageState extends State<LoginMainPage> {
                             transitionDuration: Duration(seconds: 1),
                             closedBuilder: (context, _) =>
                                 AnimatedPrimaryButton(
-                                  ButtonText: 'Login as Customer',
+                                  ButtonText: 'Login',
                                 ),
                             openBuilder: (context, _) => LoginCustomerPage()),
                       ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Column(
+                    children: [
                       Padding(
                         padding: EdgeInsets.symmetric(
                             horizontal: 30.0, vertical: 5.0),
@@ -142,15 +119,10 @@ class _LoginMainPageState extends State<LoginMainPage> {
                             transitionDuration: Duration(seconds: 1),
                             closedBuilder: (context, _) =>
                                 AnimatedSecondaryButton(
-                                  ButtonText: 'Login as Restaurant',
+                                  ButtonText: 'Register',
                                 ),
-                            openBuilder: (context, _) => LoginRestaurantPage()),
+                            openBuilder: (context, _) => RegisterMainPage()),
                       ),
-                      ElevatedButton(
-                          onPressed: () {
-                            jsontest();
-                          },
-                          child: Text('tes json'))
                     ],
                   ),
                 ),

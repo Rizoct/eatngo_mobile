@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class MenuAddPage extends StatefulWidget {
   const MenuAddPage({super.key});
@@ -10,6 +12,33 @@ class MenuAddPage extends StatefulWidget {
 }
 
 class _MenuAddPageState extends State<MenuAddPage> {
+  File? imageFile;
+  void _getFromGallery() async {
+    XFile? pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 1800,
+      maxHeight: 1800,
+      imageQuality: 20,
+    );
+
+    setState(() {
+      imageFile = File(pickedFile!.path);
+    });
+  }
+
+  void _getFromCamera() async {
+    XFile? pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.camera,
+      maxWidth: 1800,
+      maxHeight: 1800,
+      imageQuality: 20,
+    );
+
+    setState(() {
+      imageFile = File(pickedFile!.path);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,13 +88,18 @@ class _MenuAddPageState extends State<MenuAddPage> {
             SizedBox(
               height: 10,
             ),
-            Container(
-              height: 120,
-              width: 120,
-              color: Colors.grey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [Icon(Icons.add_a_photo), Text('Add a photo')],
+            InkWell(
+              onTap: () {
+                _getFromGallery();
+              },
+              child: Container(
+                height: 120,
+                width: 120,
+                color: Colors.grey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [Icon(Icons.add_a_photo), Text('Add a photo')],
+                ),
               ),
             ),
             Divider(

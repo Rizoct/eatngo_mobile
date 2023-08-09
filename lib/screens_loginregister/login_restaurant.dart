@@ -92,10 +92,13 @@ class _LoginRestaurantPageState extends State<LoginRestaurantPage> {
             textColor: Colors.white,
             toastLength: Toast.LENGTH_SHORT,
           );
+          print(dataUser);
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => MainMenuRestaurant(),
+              builder: (context) => MainMenuRestaurant(
+                userData: data,
+              ),
             ),
           );
         } else {
@@ -126,7 +129,6 @@ class _LoginRestaurantPageState extends State<LoginRestaurantPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     autoLoginChecker();
     super.initState();
     errormsg = "";
