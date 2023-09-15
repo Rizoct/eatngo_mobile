@@ -113,11 +113,11 @@ class _OrderMainPageState extends State<OrderMainPage>
           );
         });
       } else {
-        isInArea = false;
+        isInArea = true;
         Fluttertoast.showToast(
           fontSize: 16,
-          msg: 'Anda diluar area restoran',
-          backgroundColor: Colors.red,
+          msg: 'Anda didalam area restoran',
+          backgroundColor: Colors.green,
           textColor: Colors.white,
           toastLength: Toast.LENGTH_SHORT,
         );

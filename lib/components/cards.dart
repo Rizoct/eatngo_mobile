@@ -56,7 +56,7 @@ class RestaurantMainCard extends StatelessWidget {
                   ),
                   Flexible(
                       child: SizedBox(
-                          width: 250,
+                          width: 200,
                           child: ContentSubtitle(title: restaurantAddress))),
                   Row(
                     children: [
@@ -142,7 +142,7 @@ class MenuCard extends StatelessWidget {
                     ),
                     Flexible(
                         child: SizedBox(
-                            width: 250,
+                            width: 200,
                             child: ContentSubtitle(title: menuDesc))),
                     SizedBox(
                       width: 10,
